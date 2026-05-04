@@ -10,6 +10,11 @@ body { background: #1a1a2e; display: flex; flex-direction: column; align-items: 
 h1 { color: #00ff88; margin-bottom: 10px; }
 #score { font-size: 1.2rem; margin-bottom: 10px; }
 canvas { background: #0d1117; border: 2px solid #00ff88; border-radius: 8px; }
+#start-screen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
+#start-screen h2 { color: #00ff88; font-size: 2rem; margin-bottom: 10px; }
+#start-screen p { color: #aaa; margin-bottom: 20px; text-align: center; line-height: 1.6; }
+#start-btn { background: #00ff88; color: #000; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; }
+#start-btn:hover { background: #00cc66; }
 #game-over { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
 #game-over h2 { color: #ff4444; font-size: 2rem; }
 #restart { background: #00ff88; color: #000; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; margin-top: 20px; }
@@ -33,6 +38,11 @@ canvas { background: #0d1117; border: 2px solid #00ff88; border-radius: 8px; }
   <button class="ctrl" data-dir="down">▼</button>
   <button class="ctrl" data-dir="right">▶</button>
 </div>
+<div id="start-screen">
+  <h2>Snake Game</h2>
+  <p>Use arrow keys or WASD to move.<br/>Eat food to grow. Don't hit the walls or yourself!</p>
+  <button id="start-btn">Start Game</button>
+</div>
 <div id="game-over">
   <h2>Game Over!</h2>
   <p id="final-score"></p>
@@ -45,7 +55,7 @@ const ctx = canvas.getContext('2d');
 const GRID = 20;
 const CELL = canvas.width / GRID;
 
-let snake, food, dir, nextDir, score, speed, gameLoop;
+let snake, food, dir, nextDir, score, speed, gameLoop, running;
 
 function init() {
   snake = [{ x: 10, y: 10 }, { x: 9, y: 10 }, { x: 8, y: 10 }];
@@ -53,9 +63,19 @@ function init() {
   nextDir = { ...dir };
   score = 0;
   speed = 150;
+  running = false;
   placeFood();
   updateScore();
   if (gameLoop) clearInterval(gameLoop);
+  draw();
+  document.getElementById('start-screen').style.display = 'flex';
+  document.getElementById('game-over').style.display = 'none';
+}
+
+function startGame() {
+  if (running) return;
+  running = true;
+  document.getElementById('start-screen').style.display = 'none';
   gameLoop = setInterval(update, speed);
 }
 
@@ -114,13 +134,14 @@ function updateScore() {
 }
 
 function setDirection(d) {
+  if (!running) return;
   const dirs = { up: { x: 0, y: -1 }, down: { x: 0, y: 1 }, left: { x: -1, y: 0 }, right: { x: 1, y: 0 } };
   const nd = dirs[d];
   if (nd && !(nd.x === -dir.x && nd.y === -dir.y)) nextDir = nd;
 }
 
 document.addEventListener('keydown', e => {
-  const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right' };
+  const map = { ArrowUp: 'up', ArrowDown: 'down', ArrowLeft: 'left', ArrowRight: 'right', w: 'up', s: 'down', a: 'left', d: 'right' };
   if (map[e.key]) { e.preventDefault(); setDirection(map[e.key]); }
 });
 
@@ -129,9 +150,10 @@ document.querySelectorAll('.ctrl').forEach(btn => {
 });
 
 document.getElementById('restart').addEventListener('click', () => {
-  document.getElementById('game-over').style.display = 'none';
   init();
 });
+
+document.getElementById('start-btn').addEventListener('click', startGame);
 
 init();
 </script>
