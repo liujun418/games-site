@@ -17,14 +17,13 @@ h1 { color: #ff6b9d; margin-bottom: 6px; font-size: 1.8rem; text-shadow: 2px 2px
 #progress-fill { height: 100%; background: linear-gradient(90deg, #a855f7, #ff6b9d); border-radius: 7px; transition: width 0.3s; }
 @keyframes pulse { from { transform: scale(1); } to { transform: scale(1.1); } }
 #board { display: grid; gap: 4px; padding: 10px; background: linear-gradient(135deg, #ffe0f0, #e0f0ff); border-radius: 16px; box-shadow: 0 4px 15px rgba(255,107,157,0.3); touch-action: none; }
-.cell { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 12px; cursor: pointer; transition: transform 0.15s, box-shadow 0.15s, background 0.15s; user-select: none; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
+.cell { width: 55px; height: 55px; display: flex; align-items: center; justify-content: center; font-size: 2rem; border-radius: 12px; cursor: pointer; transition: transform 0.15s, background 0.15s, box-shadow 0.15s; user-select: none; background: white; box-shadow: 0 2px 6px rgba(0,0,0,0.1); }
 .cell:hover { transform: scale(1.08); }
 .cell.selected { background: #ffd700; box-shadow: 0 0 12px rgba(255,215,0,0.6); transform: scale(1.1); }
-.cell.eliminated { animation: pop 0.35s ease-out forwards; }
-@keyframes pop { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.4); opacity: 0.5; } 100% { transform: scale(0); opacity: 0; } }
-.cell.dropping { animation: dropIn 0.3s ease-out; }
-@keyframes dropIn { 0% { transform: translateY(-30px); opacity: 0.3; } 100% { transform: translateY(0); opacity: 1; } }
-.cell.swapping { transition: transform 0.2s ease-in-out; }
+.cell.matched { animation: pop 0.3s ease-out forwards; }
+@keyframes pop { 0% { transform: scale(1); opacity: 1; } 50% { transform: scale(1.3); opacity: 0.5; } 100% { transform: scale(0); opacity: 0; } }
+.cell.new-cell { animation: dropIn 0.25s ease-out; }
+@keyframes dropIn { 0% { transform: scale(0.5); opacity: 0.3; } 100% { transform: scale(1); opacity: 1; } }
 #overlay { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,240,245,0.95); align-items: center; justify-content: center; flex-direction: column; z-index: 100; }
 #overlay.show { display: flex; }
 #overlay h2 { color: #ff6b9d; font-size: 2rem; margin-bottom: 8px; text-shadow: 2px 2px 0 #ffe0ec; }
@@ -33,8 +32,8 @@ h1 { color: #ff6b9d; margin-bottom: 6px; font-size: 1.8rem; text-shadow: 2px 2px
 .btn { background: linear-gradient(135deg, #ff6b9d, #ff8fb1); color: white; border: none; padding: 12px 32px; font-size: 1.05rem; border-radius: 30px; cursor: pointer; font-weight: bold; box-shadow: 0 4px 12px rgba(255,107,157,0.4); transition: transform 0.15s; }
 .btn:hover { transform: scale(1.05); }
 .btn:active { transform: scale(0.95); }
-.float-text { position: fixed; pointer-events: none; font-size: 1.3rem; font-weight: bold; animation: floatUp 0.9s ease-out forwards; z-index: 50; text-shadow: 1px 1px 0 white; white-space: nowrap; }
-@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-70px) scale(1.2); opacity: 0; } }
+.float-text { position: fixed; pointer-events: none; font-size: 1.3rem; font-weight: bold; animation: floatUp 0.8s ease-out forwards; z-index: 50; text-shadow: 1px 1px 0 white; white-space: nowrap; }
+@keyframes floatUp { 0% { transform: translateY(0) scale(1); opacity: 1; } 100% { transform: translateY(-60px) scale(1.2); opacity: 0; } }
 .level-up-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background: linear-gradient(135deg, #ff6b9d, #a855f7); color: white; font-size: 1.8rem; font-weight: bold; padding: 16px 40px; border-radius: 20px; z-index: 60; animation: levelUp 1.5s ease-out forwards; box-shadow: 0 6px 20px rgba(168,85,247,0.5); text-align: center; }
 @keyframes levelUp { 0% { transform: translate(-50%, -50%) scale(0.3); opacity: 0; } 20% { transform: translate(-50%, -50%) scale(1.1); opacity: 1; } 80% { transform: translate(-50%, -50%) scale(1); opacity: 1; } 100% { transform: translate(-50%, -50%) scale(0.9); opacity: 0; } }
 .ad-placeholder { background: linear-gradient(135deg, #ffe0f0, #e0f0ff); padding: 10px; margin: 12px 0; text-align: center; border-radius: 12px; color: #aaa; font-size: 0.75rem; width: 300px; }
@@ -57,7 +56,7 @@ h1 { color: #ff6b9d; margin-bottom: 6px; font-size: 1.8rem; text-shadow: 2px 2px
 <div id="board"></div>
 <div id="overlay">
   <h2 id="overlay-title">Cat Match!</h2>
-  <p class="desc" id="overlay-desc">Swap adjacent cats to match 3 or more. Score points and advance levels!</p>
+  <p class="desc" id="overlay-desc">Tap two adjacent matching cats to eliminate them. Score points and advance levels!</p>
   <p class="final-score" id="final-score"></p>
   <button class="btn" id="overlay-btn">Start Game</button>
 </div>
@@ -68,10 +67,9 @@ const ROWS = 8, COLS = 8;
 const TIME_PER_LEVEL = 60;
 const BASE_CATS = 5;
 const LEVEL_THRESHOLD = 100;
-const MULTIPLIERS = { 3: 1, 4: 2, 5: 3, 6: 5, 7: 8 };
 
 let board, score, level, levelScore, timeLeft, gameTimer, running, animating;
-let selected, numCats;
+let selected;
 
 function getNumCatsForLevel(lvl) {
   return Math.min(BASE_CATS + lvl - 1, ALL_CATS.length);
@@ -81,45 +79,35 @@ function getCatsForLevel(lvl) {
   return ALL_CATS.slice(0, getNumCatsForLevel(lvl));
 }
 
+function randomCat() {
+  return getCatsForLevel(level)[Math.floor(Math.random() * getNumCatsForLevel(level))];
+}
+
 function init() {
   score = 0;
   level = 1;
   levelScore = 0;
   timeLeft = TIME_PER_LEVEL;
-  numCats = getNumCatsForLevel(level);
   selected = null;
   animating = false;
   running = false;
   updateUI();
   generateBoard();
-  render();
-  showOverlay('Cat Match!', 'Swap adjacent cats to match 3 or more in a row. Score points and advance levels! Match 4+ for bonus points!', '', 'Start Game');
+  render([]);
+  showOverlay('Cat Match!', 'Tap two adjacent matching cats to eliminate them. Score points and advance levels!', '', 'Start Game');
 }
 
 function generateBoard() {
-  const cats = getCatsForLevel(level);
   board = [];
   for (let r = 0; r < ROWS; r++) {
     board[r] = [];
     for (let c = 0; c < COLS; c++) {
-      let cat;
-      let attempts = 0;
-      do {
-        cat = cats[Math.floor(Math.random() * cats.length)];
-        attempts++;
-      } while (
-        attempts < 20 &&
-        (
-          (c >= 2 && board[r][c - 1] === cat && board[r][c - 2] === cat) ||
-          (r >= 2 && board[r - 1][c] === cat && board[r - 2][c] === cat)
-        )
-      );
-      board[r][c] = cat;
+      board[r][c] = randomCat();
     }
   }
 }
 
-function render(droppedCells) {
+function render(newCells) {
   const el = document.getElementById('board');
   const cellSize = window.innerWidth <= 500 ? 44 : 55;
   el.style.gridTemplateColumns = `repeat(${COLS}, ${cellSize}px)`;
@@ -136,8 +124,8 @@ function render(droppedCells) {
         if (selected && selected.r === r && selected.c === c) {
           cell.classList.add('selected');
         }
-        if (droppedCells && droppedCells.some(([dr, dc]) => dr === r && dc === c)) {
-          cell.classList.add('dropping');
+        if (newCells && newCells.has(`${r},${c}`)) {
+          cell.classList.add('new-cell');
         }
       } else {
         cell.style.visibility = 'hidden';
@@ -147,224 +135,102 @@ function render(droppedCells) {
   }
 }
 
+function isAdjacent(r1, c1, r2, c2) {
+  return (Math.abs(r1 - r2) + Math.abs(c1 - c2)) === 1;
+}
+
 function handleClick(r, c) {
   if (!running || animating || board[r][c] === null) return;
 
   if (!selected) {
     selected = { r, c };
-    render();
+    render(new Set());
     return;
   }
 
+  // Tap same cell → deselect
   if (selected.r === r && selected.c === c) {
     selected = null;
-    render();
+    render(new Set());
     return;
   }
 
-  const dr = Math.abs(selected.r - r);
-  const dc = Math.abs(selected.c - c);
-  if ((dr === 1 && dc === 0) || (dr === 0 && dc === 1)) {
-    trySwap(selected.r, selected.c, r, c);
+  // Check adjacency
+  if (isAdjacent(selected.r, selected.c, r, c)) {
+    // Check if they match
+    if (board[selected.r][selected.c] === board[r][c]) {
+      const sr = selected.r, sc = selected.c;
+      selected = null;
+      eliminatePair(sr, sc, r, c);
+    } else {
+      // Not matching → select the new one instead
+      selected = { r, c };
+      render(new Set());
+    }
   } else {
+    // Not adjacent → select the new one instead
     selected = { r, c };
-    render();
+    render(new Set());
   }
 }
 
-function trySwap(r1, c1, r2, c2) {
+function eliminatePair(r1, c1, r2, c2) {
   animating = true;
-  selected = null;
 
-  // Swap
-  [board[r1][c1], board[r2][c2]] = [board[r2][c2], board[r1][c1]];
-  render();
+  // Animate
+  const el = document.getElementById('board');
+  const cell1 = el.querySelector(`[data-row="${r1}"][data-col="${c1}"]`);
+  const cell2 = el.querySelector(`[data-row="${r2}"][data-col="${c2}"]`);
+  if (cell1) cell1.classList.add('matched');
+  if (cell2) cell2.classList.add('matched');
 
-  const matches = findAllMatches();
-  if (matches.length > 0) {
-    processMatches(matches);
-  } else {
-    // Swap back
-    setTimeout(() => {
-      [board[r1][c1], board[r2][c2]] = [board[r2][c2], board[r1][c1]];
-      render();
-      animating = false;
-    }, 200);
-  }
-}
-
-function findAllMatches() {
-  const matched = new Set();
-
-  // Horizontal
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS - 2; c++) {
-      if (board[r][c] && board[r][c] === board[r][c+1] && board[r][c] === board[r][c+2]) {
-        let end = c + 2;
-        while (end + 1 < COLS && board[r][end+1] === board[r][c]) end++;
-        for (let i = c; i <= end; i++) matched.add(`${r},${i}`);
-      }
-    }
-  }
-
-  // Vertical
-  for (let c = 0; c < COLS; c++) {
-    for (let r = 0; r < ROWS - 2; r++) {
-      if (board[r][c] && board[r][c] === board[r+1][c] && board[r][c] === board[r+2][c]) {
-        let end = r + 2;
-        while (end + 1 < ROWS && board[end+1][c] === board[r][c]) end++;
-        for (let i = r; i <= end; i++) matched.add(`${i},${c}`);
-      }
-    }
-  }
-
-  return [...matched].map(s => s.split(',').map(Number));
-}
-
-function processMatches(matches) {
-  const cats = getCatsForLevel(level);
-  const groups = {};
-  matches.forEach(([r, c]) => {
-    const key = board[r][c];
-    if (!groups[key]) groups[key] = [];
-    groups[key].push([r, c]);
-  });
-
-  let totalPoints = 0;
-  let matchCount = matches.length;
-
-  // Calculate score per group
-  Object.values(groups).forEach(group => {
-    const len = group.length;
-    const mult = MULTIPLIERS[Math.min(len, 7)] || 8;
-    totalPoints += 10 * len * mult;
-  });
-
-  score += totalPoints;
-  levelScore += totalPoints;
+  // Score
+  levelScore += 10;
+  score += 10;
   updateUI();
-
-  // Show float text at center of matches
-  const avgR = matches.reduce((s, m) => s + m[0], 0) / matches.length;
-  const avgC = matches.reduce((s, m) => s + m[1], 0) / matches.length;
-  const text = matchCount >= 5 ? `🎉 Amazing! +${totalPoints}` :
-               matchCount >= 4 ? `✨ Great! +${totalPoints}` : `+${totalPoints}`;
-  showFloatText(text, avgR, avgC);
-
-  // Animate elimination
-  matches.forEach(([r, c]) => {
-    const cellEl = document.getElementById('board').querySelector(`[data-row="${r}"][data-col="${c}"]`);
-    if (cellEl) cellEl.classList.add('eliminated');
-  });
+  showFloatText('+10', r1, c1);
 
   setTimeout(() => {
-    // Remove matched
-    matches.forEach(([r, c]) => { board[r][c] = null; });
+    board[r1][c1] = null;
+    board[r2][c2] = null;
 
     // Gravity
-    const dropped = applyGravity();
+    applyGravity();
 
     // Fill empty
-    const filled = fillEmpty();
+    const newCells = fillEmpty();
 
-    render([...dropped, ...filled]);
+    render(newCells);
+    animating = false;
 
-    // Check for cascading matches (auto-eliminate any 3+ that resulted from fill)
-    const newMatches = findAllMatches();
-    if (newMatches.length > 0) {
-      animating = true;
-      showFloatText('🔥 Chain!', 4, 4);
-      processMatches(newMatches);
-    } else {
-      animating = false;
-      // Check level up
-      checkLevelUp();
-      // Ensure board has moves
-      if (running && !hasValidMoves()) {
-        shuffleBoard();
-      }
-    }
-  }, 380);
+    // Check level up
+    checkLevelUp();
+  }, 320);
 }
 
 function applyGravity() {
-  const dropped = [];
   for (let c = 0; c < COLS; c++) {
     let col = [];
     for (let r = ROWS - 1; r >= 0; r--) {
       if (board[r][c] !== null) col.push(board[r][c]);
     }
     for (let r = 0; r < ROWS; r++) {
-      const newR = ROWS - 1 - r;
-      board[newR][c] = r < col.length ? col[r] : null;
-      if (r < col.length) dropped.push([newR, c]);
+      board[ROWS - 1 - r][c] = r < col.length ? col[r] : null;
     }
   }
-  return dropped;
 }
 
 function fillEmpty() {
-  const cats = getCatsForLevel(level);
-  const filled = [];
+  const newCells = new Set();
   for (let c = 0; c < COLS; c++) {
     for (let r = 0; r < ROWS; r++) {
       if (board[r][c] === null) {
-        board[r][c] = cats[Math.floor(Math.random() * cats.length)];
-        filled.push([r, c]);
+        board[r][c] = randomCat();
+        newCells.add(`${r},${c}`);
       }
     }
   }
-  return filled;
-}
-
-function hasValidMoves() {
-  for (let r = 0; r < ROWS; r++) {
-    for (let c = 0; c < COLS; c++) {
-      if (board[r][c] === null) continue;
-      // Swap right
-      if (c + 1 < COLS && board[r][c+1] !== null) {
-        [board[r][c], board[r][c+1]] = [board[r][c+1], board[r][c]];
-        if (findAllMatches().length > 0) {
-          [board[r][c], board[r][c+1]] = [board[r][c+1], board[r][c]];
-          return true;
-        }
-        [board[r][c], board[r][c+1]] = [board[r][c+1], board[r][c]];
-      }
-      // Swap down
-      if (r + 1 < ROWS && board[r+1][c] !== null) {
-        [board[r][c], board[r+1][c]] = [board[r+1][c], board[r][c]];
-        if (findAllMatches().length > 0) {
-          [board[r][c], board[r+1][c]] = [board[r+1][c], board[r][c]];
-          return true;
-        }
-        [board[r][c], board[r+1][c]] = [board[r+1][c], board[r][c]];
-      }
-    }
-  }
-  return false;
-}
-
-function shuffleBoard() {
-  const all = [];
-  for (let r = 0; r < ROWS; r++)
-    for (let c = 0; c < COLS; c++)
-      if (board[r][c] !== null) all.push(board[r][c]);
-
-  for (let i = all.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i + 1));
-    [all[i], all[j]] = [all[j], all[i]];
-  }
-
-  let idx = 0;
-  for (let r = 0; r < ROWS; r++)
-    for (let c = 0; c < COLS; c++)
-      board[r][c] = all[idx++];
-
-  // If still no moves or has initial matches, regenerate
-  if (findAllMatches().length > 0 || !hasValidMoves()) {
-    generateBoard();
-  }
-  render();
+  return newCells;
 }
 
 function checkLevelUp() {
@@ -372,15 +238,9 @@ function checkLevelUp() {
   if (levelScore >= threshold) {
     level++;
     levelScore = 0;
-    numCats = getNumCatsForLevel(level);
-    timeLeft = Math.min(timeLeft + 15, 90); // Bonus time
+    timeLeft = Math.min(timeLeft + 15, 90);
     updateUI();
     showLevelUp();
-    // Add a bonus cat type if available
-    if (getNumCatsForLevel(level) > getNumCatsForLevel(level - 1)) {
-      generateBoard();
-      render();
-    }
   }
 }
 
@@ -394,7 +254,7 @@ function showLevelUp() {
 
 function showFloatText(text, r, c) {
   const el = document.getElementById('board');
-  const cell = el.querySelector(`[data-row="${Math.round(r)}"][data-col="${Math.round(c)}"]`);
+  const cell = el.querySelector(`[data-row="${r}"][data-col="${c}"]`);
   if (!cell) return;
   const rect = cell.getBoundingClientRect();
   const float = document.createElement('div');
@@ -402,11 +262,8 @@ function showFloatText(text, r, c) {
   float.textContent = text;
   float.style.left = rect.left + 'px';
   float.style.top = rect.top + 'px';
-  if (text.includes('🔥') || text.includes('🎉')) {
-    float.style.fontSize = '1.6rem';
-  }
   document.body.appendChild(float);
-  setTimeout(() => float.remove(), 900);
+  setTimeout(() => float.remove(), 800);
 }
 
 function updateUI() {
