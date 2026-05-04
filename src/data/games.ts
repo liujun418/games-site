@@ -1,0 +1,43 @@
+import type { Game } from '@/types/game';
+
+export const selfDevelopedGames: Game[] = [
+  {
+    id: '2048',
+    slug: '2048',
+    title: '2048',
+    description: 'Merge tiles to reach 2048 in this addictive number puzzle game. Play free online.',
+    category: 'puzzle',
+    thumbnail: '/images/2048.png',
+    source: 'self',
+    gameUrl: '/games/2048/',
+    tags: ['puzzle', 'numbers', 'merge', 'brain'],
+    featured: true,
+    createdAt: '2026-05-04',
+  },
+  {
+    id: 'snake',
+    slug: 'snake-game',
+    title: 'Snake',
+    description: 'Classic snake game. Eat food, grow longer, dont hit the walls. Play free online.',
+    category: 'arcade',
+    thumbnail: '/images/snake.png',
+    source: 'self',
+    gameUrl: '/games/snake/',
+    tags: ['arcade', 'classic', 'snake', 'retro'],
+    featured: true,
+    createdAt: '2026-05-04',
+  },
+  {
+    id: 'memory',
+    slug: 'memory-match',
+    title: 'Memory Match',
+    description: 'Test your memory by matching pairs of cards. Fun brain training game. Play free.',
+    category: 'puzzle',
+    thumbnail: '/images/memory.png',
+    source: 'self',
+    gameUrl: '/games/memory/',
+    tags: ['puzzle', 'memory', 'cards', 'brain'],
+    featured: false,
+    createdAt: '2026-05-04',
+  },
+];

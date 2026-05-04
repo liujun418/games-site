@@ -1,0 +1,16 @@
+@import "tailwindcss";
+
+body {
+  background: #0a0a0a;
+  color: #ededed;
+}
+
+/* AdSense ad container styles */
+.adsbygoogle {
+  min-height: 90px;
+}
+
+/* Smooth scroll */
+html {
+  scroll-behavior: smooth;
+}
