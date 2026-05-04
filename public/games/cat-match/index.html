@@ -94,7 +94,22 @@ function init() {
   updateUI();
   generateBoard();
   render([]);
-  showOverlay('Cat Match!', 'Tap two adjacent matching cats to eliminate them. Score points and advance levels!', '', 'Start Game');
+  hideOverlay();
+}
+
+function startGame() {
+  if (running) return;
+  running = true;
+  hideOverlay();
+  gameTimer = setInterval(() => {
+    timeLeft--;
+    updateUI();
+    if (timeLeft <= 0) {
+      clearInterval(gameTimer);
+      running = false;
+      showOverlay('Game Over!', 'Great job, kitty master!', `Final Score: ${score} | Level ${level}`, 'Play Again');
+    }
+  }, 1000);
 }
 
 function generateBoard() {
@@ -278,21 +293,6 @@ function updateUI() {
   document.getElementById('progress-fill').style.width = pct + '%';
 }
 
-function startGame() {
-  if (running) return;
-  running = true;
-  hideOverlay();
-  gameTimer = setInterval(() => {
-    timeLeft--;
-    updateUI();
-    if (timeLeft <= 0) {
-      clearInterval(gameTimer);
-      running = false;
-      showOverlay('Game Over!', 'Great job, kitty master!', `Final Score: ${score} | Level ${level}`, 'Play Again');
-    }
-  }, 1000);
-}
-
 function showOverlay(title, desc, finalScore, btnText) {
   document.getElementById('overlay-title').textContent = title;
   document.getElementById('overlay-desc').textContent = desc;
@@ -311,6 +311,7 @@ document.getElementById('overlay-btn').addEventListener('click', () => {
 });
 
 init();
+startGame();
 </script>
 </body>
 </html>
