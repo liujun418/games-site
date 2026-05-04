@@ -16,6 +16,7 @@ export function GameCard({ game }: GameCardProps) {
           fill
           className="object-cover"
           sizes="(max-width: 768px) 50vw, 33vw"
+          unoptimized
         />
         {game.source === 'self' && (
           <span className="absolute top-2 left-2 bg-yellow-400 text-gray-900 text-xs font-bold px-2 py-0.5 rounded">

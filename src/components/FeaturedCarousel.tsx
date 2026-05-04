@@ -28,7 +28,7 @@ export function FeaturedCarousel({ games }: FeaturedCarouselProps) {
   return (
     <div className="relative rounded-2xl overflow-hidden mb-10 bg-gray-800">
       <div className="relative aspect-[16/6] md:aspect-[21/6]">
-        <Image src={current.thumbnail} alt={current.title} fill className="object-cover" priority />
+        <Image src={current.thumbnail} alt={current.title} fill className="object-cover" priority unoptimized />
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/60 to-transparent" />
         <div className="absolute inset-0 flex items-center">
           <div className="px-8 md:px-12 max-w-lg">
