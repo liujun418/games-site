@@ -98,20 +98,24 @@ function init() {
 
 function generateBoard() {
   const cats = getCatsForLevel(level);
-  board = [];
-  for (let r = 0; r < ROWS; r++) {
-    board[r] = [];
-    for (let c = 0; c < COLS; c++) {
-      let cat;
-      do {
-        cat = cats[Math.floor(Math.random() * cats.length)];
-      } while (
-        (c >= 2 && board[r][c-1] === cat && board[r][c-2] === cat) ||
-        (r >= 2 && board[r-1][c] === cat && board[r-2][c] === cat)
-      );
-      board[r][c] = cat;
+  let attempts = 0;
+  do {
+    board = [];
+    for (let r = 0; r < ROWS; r++) {
+      board[r] = [];
+      for (let c = 0; c < COLS; c++) {
+        let cat;
+        do {
+          cat = cats[Math.floor(Math.random() * cats.length)];
+        } while (
+          (c >= 2 && board[r][c-1] === cat && board[r][c-2] === cat) ||
+          (r >= 2 && board[r-1][c] === cat && board[r-2][c] === cat)
+        );
+        board[r][c] = cat;
+      }
     }
-  }
+    attempts++;
+  } while (findAllMatches().length > 0 && attempts < 50);
 }
 
 function render(droppedCells) {
@@ -306,7 +310,14 @@ function fillEmpty() {
   for (let c = 0; c < COLS; c++) {
     for (let r = 0; r < ROWS; r++) {
       if (board[r][c] === null) {
-        board[r][c] = cats[Math.floor(Math.random() * cats.length)];
+        let cat;
+        do {
+          cat = cats[Math.floor(Math.random() * cats.length)];
+        } while (
+          (c >= 2 && board[r][c-1] === cat && board[r][c-2] === cat) ||
+          (r >= 2 && board[r-1][c] === cat && board[r-2][c] === cat)
+        );
+        board[r][c] = cat;
         filled.push([r, c]);
       }
     }
