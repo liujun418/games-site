@@ -44,6 +44,7 @@ const emojis = ['🎮', '🎲', '🎯', '🎪', '🎨', '🎭', '🎵', '🎸'];
 let cards, flipped, matched, moves, lock;
 
 function init() {
+  document.getElementById('win').style.display = 'none';
   const pairs = [...emojis, ...emojis];
   cards = pairs.sort(() => Math.random() - 0.5);
   flipped = [];
