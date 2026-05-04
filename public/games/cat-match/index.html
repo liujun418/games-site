@@ -98,17 +98,25 @@ function init() {
 
 function generateBoard() {
   const cats = getCatsForLevel(level);
-  let attempts = 0;
-  do {
-    board = [];
-    for (let r = 0; r < ROWS; r++) {
-      board[r] = [];
-      for (let c = 0; c < COLS; c++) {
-        board[r][c] = cats[Math.floor(Math.random() * cats.length)];
-      }
+  board = [];
+  for (let r = 0; r < ROWS; r++) {
+    board[r] = [];
+    for (let c = 0; c < COLS; c++) {
+      let cat;
+      let attempts = 0;
+      do {
+        cat = cats[Math.floor(Math.random() * cats.length)];
+        attempts++;
+      } while (
+        attempts < 20 &&
+        (
+          (c >= 2 && board[r][c - 1] === cat && board[r][c - 2] === cat) ||
+          (r >= 2 && board[r - 1][c] === cat && board[r - 2][c] === cat)
+        )
+      );
+      board[r][c] = cat;
     }
-    attempts++;
-  } while (findAllMatches().length > 0 && attempts < 100);
+  }
 }
 
 function render(droppedCells) {
