@@ -104,18 +104,11 @@ function generateBoard() {
     for (let r = 0; r < ROWS; r++) {
       board[r] = [];
       for (let c = 0; c < COLS; c++) {
-        let cat;
-        do {
-          cat = cats[Math.floor(Math.random() * cats.length)];
-        } while (
-          (c >= 2 && board[r][c-1] === cat && board[r][c-2] === cat) ||
-          (r >= 2 && board[r-1][c] === cat && board[r-2][c] === cat)
-        );
-        board[r][c] = cat;
+        board[r][c] = cats[Math.floor(Math.random() * cats.length)];
       }
     }
     attempts++;
-  } while (findAllMatches().length > 0 && attempts < 50);
+  } while (findAllMatches().length > 0 && attempts < 100);
 }
 
 function render(droppedCells) {
@@ -267,17 +260,15 @@ function processMatches(matches) {
     const filled = fillEmpty();
 
     render([...dropped, ...filled]);
-    animating = false;
 
-    // Check for cascading matches
+    // Check for cascading matches (auto-eliminate any 3+ that resulted from fill)
     const newMatches = findAllMatches();
     if (newMatches.length > 0) {
-      setTimeout(() => {
-        animating = true;
-        showFloatText('🔥 Chain!', 4, 4);
-        processMatches(newMatches);
-      }, 250);
+      animating = true;
+      showFloatText('🔥 Chain!', 4, 4);
+      processMatches(newMatches);
     } else {
+      animating = false;
       // Check level up
       checkLevelUp();
       // Ensure board has moves
@@ -310,14 +301,7 @@ function fillEmpty() {
   for (let c = 0; c < COLS; c++) {
     for (let r = 0; r < ROWS; r++) {
       if (board[r][c] === null) {
-        let cat;
-        do {
-          cat = cats[Math.floor(Math.random() * cats.length)];
-        } while (
-          (c >= 2 && board[r][c-1] === cat && board[r][c-2] === cat) ||
-          (r >= 2 && board[r-1][c] === cat && board[r-2][c] === cat)
-        );
-        board[r][c] = cat;
+        board[r][c] = cats[Math.floor(Math.random() * cats.length)];
         filled.push([r, c]);
       }
     }
