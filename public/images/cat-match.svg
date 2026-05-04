@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#ffe0f5"/>
+  <text x="80" y="100" font-size="36">🐱</text>
+  <text x="140" y="100" font-size="36">😺</text>
+  <text x="200" y="100" font-size="36">🐱</text>
+  <text x="260" y="100" font-size="36">🎀</text>
+  <text x="320" y="100" font-size="36">🐾</text>
+  <text x="110" y="150" font-size="36">🐟</text>
+  <text x="170" y="150" font-size="36">🐈</text>
+  <text x="230" y="150" font-size="36">🐾</text>
+  <text x="290" y="150" font-size="36">😺</text>
+  <text x="200" y="200" text-anchor="middle" fill="#ff6b9d" font-family="Arial" font-size="18" font-weight="bold">Cat Match!</text>
+</svg>

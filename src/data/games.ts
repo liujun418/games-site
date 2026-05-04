@@ -40,4 +40,17 @@ export const selfDevelopedGames: Game[] = [
     featured: false,
     createdAt: '2026-05-04',
   },
+  {
+    id: 'cat-match',
+    slug: 'cat-match',
+    title: 'Cat Match',
+    description: 'Tap matching cats to eliminate them! Clear as many as you can in 60 seconds. Cute cartoon puzzle fun.',
+    category: 'puzzle',
+    thumbnail: '/images/cat-match.svg',
+    source: 'self',
+    gameUrl: '/games/cat-match/index.html',
+    tags: ['puzzle', 'cats', 'match', 'casual', 'cute'],
+    featured: true,
+    createdAt: '2026-05-05',
+  },
 ];
