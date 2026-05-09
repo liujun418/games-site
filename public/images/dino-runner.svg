@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#f0f0f0"/>
+  <rect x="0" y="180" width="400" height="3" fill="#555"/>
+  <rect x="50" y="120" width="25" height="60" fill="#2ecc71" rx="2"/>
+  <rect x="180" y="100" width="20" height="80" fill="#2ecc71" rx="2"/>
+  <rect x="310" y="130" width="28" height="50" fill="#2ecc71" rx="2"/>
+  <rect x="80" y="140" width="20" height="40" fill="#333" rx="2"/>
+  <rect x="88" y="145" width="5" height="5" fill="#fff"/>
+  <text x="200" y="210" text-anchor="middle" fill="#333" font-family="Arial" font-size="14" font-weight="bold">Dino Runner</text>
+</svg>

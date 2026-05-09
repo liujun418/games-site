@@ -10,19 +10,19 @@ export function getAllGames(): Game[] {
 }
 
 export function getFeaturedGames(): Game[] {
-  return getAllGames().filter(g => g.featured);
+  return selfDevelopedGames.filter(g => g.featured);
 }
 
 export function getGamesByCategory(category: string): Game[] {
-  return getAllGames().filter(g => g.category === category);
+  return selfDevelopedGames.filter(g => g.category === category);
 }
 
 export function getGameBySlug(slug: string): Game | undefined {
-  return getAllGames().find(g => g.slug === slug);
+  return selfDevelopedGames.find(g => g.slug === slug);
 }
 
 export function getCategories(): string[] {
-  const games = getAllGames();
+  const games = selfDevelopedGames;
   const cats = [...new Set(games.map(g => g.category))];
   return cats.sort();
 }

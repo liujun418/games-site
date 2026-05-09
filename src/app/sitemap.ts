@@ -1,30 +1,72 @@
-import { getAllGames, getCategories } from '@/data';
+import { selfGames, getCategories } from '@/data';
 import type { MetadataRoute } from 'next';
 
+const LOCALES = ['en', 'es', 'ar'] as const;
+const baseUrl = 'https://game.toolboxonline.club';
+
 export default function sitemap(): MetadataRoute.Sitemap {
-  const games = getAllGames();
+  const games = selfGames;
   const categories = getCategories();
-  const baseUrl = 'https://playfreegames.fun';
 
-  const gameUrls = games.map(game => ({
-    url: `${baseUrl}/game/${game.slug}`,
-    lastModified: new Date(game.createdAt),
-    changeFrequency: 'weekly' as const,
-    priority: 0.8,
-  }));
+  const pages: MetadataRoute.Sitemap = [];
 
-  const categoryUrls = categories.map(cat => ({
-    url: `${baseUrl}/category/${cat}`,
-    lastModified: new Date(),
-    changeFrequency: 'daily' as const,
-    priority: 0.7,
-  }));
+  // Add all locale pages
+  for (const locale of LOCALES) {
+    pages.push({
+      url: `${baseUrl}/${locale}/`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 1.0,
+    });
 
-  return [
-    { url: baseUrl, lastModified: new Date(), changeFrequency: 'daily', priority: 1.0 },
-    ...gameUrls,
-    ...categoryUrls,
-    { url: `${baseUrl}/privacy`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-    { url: `${baseUrl}/terms`, lastModified: new Date(), changeFrequency: 'monthly', priority: 0.5 },
-  ];
+    pages.push({
+      url: `${baseUrl}/${locale}/all-games`,
+      lastModified: new Date(),
+      changeFrequency: 'daily',
+      priority: 0.9,
+    });
+
+    pages.push({
+      url: `${baseUrl}/${locale}/favorites`,
+      lastModified: new Date(),
+      changeFrequency: 'weekly',
+      priority: 0.5,
+    });
+
+    pages.push({
+      url: `${baseUrl}/${locale}/privacy`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    });
+
+    pages.push({
+      url: `${baseUrl}/${locale}/terms`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.5,
+    });
+
+    // Category pages per locale
+    for (const cat of categories) {
+      pages.push({
+        url: `${baseUrl}/${locale}/category/${cat}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily',
+        priority: 0.7,
+      });
+    }
+
+    // Game pages per locale
+    for (const game of games) {
+      pages.push({
+        url: `${baseUrl}/${locale}/game/${game.slug}`,
+        lastModified: new Date(game.createdAt),
+        changeFrequency: 'weekly',
+        priority: 0.8,
+      });
+    }
+  }
+
+  return pages;
 }

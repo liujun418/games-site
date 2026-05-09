@@ -17,8 +17,48 @@ export function gameJsonLd(game: { title: string; description: string; thumbnail
     name: game.title,
     description: game.description,
     thumbnailUrl: game.thumbnail,
-    url: `https://playfreegames.fun/game/${game.slug}`,
+    url: `https://game.toolboxonline.club/game/${game.slug}`,
     genre: 'Browser Game',
     gamePlatform: 'Web Browser',
+    offers: {
+      '@type': 'Offer',
+      price: '0',
+      priceCurrency: 'USD',
+    },
+    playMode: 'SinglePlayer',
+    applicationCategory: 'Game',
+  };
+}
+
+export function generateBreadcrumbsJsonLd(items: { name: string; url: string }[]) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'BreadcrumbList',
+    itemListElement: items.map((item, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      name: item.name,
+      item: item.url,
+    })),
+  };
+}
+
+export function generateItemListJsonLd(games: { title: string; description: string; slug: string; thumbnail: string }[], url: string, name?: string) {
+  return {
+    '@context': 'https://schema.org',
+    '@type': 'ItemList',
+    name: name || 'Free Online Games',
+    url,
+    itemListElement: games.map((game, index) => ({
+      '@type': 'ListItem',
+      position: index + 1,
+      item: {
+        '@type': 'VideoGame',
+        name: game.title,
+        description: game.description,
+        url: `https://game.toolboxonline.club/game/${game.slug}`,
+        thumbnailUrl: game.thumbnail,
+      },
+    })),
   };
 }

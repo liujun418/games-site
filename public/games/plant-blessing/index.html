@@ -1,0 +1,1466 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>Plant Blessing - Grow & Discover Blessings | Play Free Online</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  background: linear-gradient(180deg, #0d1b2a 0%, #1b2838 50%, #1a3a1a 100%);
+  font-family: 'Segoe UI', Arial, sans-serif;
+  color: #e8e8e8;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  overflow-x: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+
+/* === START SCREEN === */
+#start-screen {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+  padding: 20px;
+  text-align: center;
+}
+#start-screen h1 {
+  font-size: 2rem;
+  color: #4ade80;
+  margin-bottom: 8px;
+  text-shadow: 0 0 20px rgba(74, 222, 128, 0.3);
+}
+#start-screen p { color: #94a3b8; margin-bottom: 24px; font-size: 1rem; }
+#plant-preview {
+  font-size: 4rem;
+  margin-bottom: 24px;
+  animation: bobUp 2s ease-in-out infinite;
+}
+@keyframes bobUp {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-10px); }
+}
+#plant-preview-text { color: #86efac; font-size: 0.9rem; margin-bottom: 16px; }
+.btn {
+  background: linear-gradient(135deg, #4ade80, #22c55e);
+  color: #0a2e0a;
+  border: none;
+  padding: 14px 32px;
+  font-size: 1.1rem;
+  border-radius: 12px;
+  cursor: pointer;
+  font-weight: 700;
+  transition: transform 0.15s, box-shadow 0.15s;
+  margin: 6px;
+}
+.btn:hover { transform: scale(1.05); box-shadow: 0 4px 20px rgba(74, 222, 128, 0.4); }
+.btn:active { transform: scale(0.97); }
+.btn-secondary {
+  background: linear-gradient(135deg, #3b82f6, #2563eb);
+  color: #fff;
+}
+.btn-gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: #1a1a00;
+}
+.btn-small {
+  padding: 8px 16px;
+  font-size: 0.85rem;
+  border-radius: 8px;
+}
+
+/* === GAME CONTAINER === */
+#game-container {
+  width: 100%;
+  max-width: 520px;
+  padding: 12px;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+#game-title {
+  text-align: center;
+  font-size: 1.3rem;
+  color: #4ade80;
+  margin: 8px 0;
+}
+
+/* === RESOURCE BAR === */
+#resource-bar {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: rgba(255,255,255,0.05);
+  border-radius: 12px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+  flex-wrap: wrap;
+  gap: 6px;
+}
+.resource {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 1rem;
+  font-weight: 600;
+}
+.resource .icon { font-size: 1.3rem; }
+.resource .count { color: #fbbf24; min-width: 24px; text-align: center; }
+#stage-label { color: #86efac; font-weight: 600; font-size: 0.9rem; }
+
+/* === PROGRESS BAR === */
+#progress-container {
+  background: rgba(255,255,255,0.05);
+  border-radius: 10px;
+  padding: 8px 12px;
+  margin-bottom: 8px;
+}
+.progress-label { font-size: 0.8rem; color: #94a3b8; margin-bottom: 4px; }
+.progress-row { display: flex; align-items: center; gap: 6px; margin-bottom: 3px; }
+.progress-icon { font-size: 1rem; }
+.progress-track {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 4px;
+  overflow: hidden;
+}
+.progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition: width 0.4s ease;
+}
+.progress-fill.water { background: linear-gradient(90deg, #3b82f6, #60a5fa); }
+.progress-fill.fert { background: linear-gradient(90deg, #f59e0b, #fbbf24); }
+.progress-nums { font-size: 0.75rem; color: #cbd5e1; min-width: 40px; text-align: right; }
+
+/* === PLANT AREA === */
+#plant-area {
+  position: relative;
+  flex: 1;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 280px;
+  background: radial-gradient(ellipse at bottom, rgba(34, 120, 34, 0.15) 0%, transparent 70%);
+  border-radius: 16px;
+  margin-bottom: 8px;
+  overflow: hidden;
+}
+
+/* === PLANT CSS ART === */
+.plant-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  position: relative;
+  transition: transform 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+.plant-container.growing { animation: plantGrow 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+@keyframes plantGrow {
+  0% { transform: scale(0.7); }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); }
+}
+
+/* Ground / pot */
+.ground {
+  width: 120px;
+  height: 30px;
+  background: linear-gradient(180deg, #8B6914, #654321);
+  border-radius: 50% / 40%;
+  position: relative;
+}
+.ground::after {
+  content: '';
+  position: absolute;
+  top: -5px;
+  left: 10px;
+  right: 10px;
+  height: 10px;
+  background: #5a3a1a;
+  border-radius: 50%;
+}
+
+/* Stem */
+.stem {
+  width: 6px;
+  background: linear-gradient(180deg, var(--plant-color, #22c55e), #166534);
+  border-radius: 3px;
+  position: relative;
+  transition: height 0.5s ease;
+}
+.stem.h1 { height: 0; }
+.stem.h2 { height: 20px; }
+.stem.h3 { height: 40px; }
+.stem.h4 { height: 60px; }
+.stem.h5 { height: 80px; }
+.stem.h6 { height: 100px; }
+
+/* Leaves */
+.leaf {
+  position: absolute;
+  width: 20px;
+  height: 10px;
+  border-radius: 0 50% 50% 0;
+  background: var(--leaf-color, #4ade80);
+  transform-origin: left center;
+}
+.leaf.right { left: 4px; transform: rotate(-30deg); }
+.leaf.left { right: 4px; transform: rotate(210deg) scaleX(-1); }
+.leaf:nth-child(odd) { top: 20%; }
+.leaf:nth-child(even) { top: 40%; }
+
+/* Flower / top */
+.flower-top {
+  font-size: 1.5rem;
+  position: relative;
+  z-index: 2;
+  animation: sway 3s ease-in-out infinite;
+}
+@keyframes sway {
+  0%, 100% { transform: rotate(-2deg); }
+  50% { transform: rotate(2deg); }
+}
+
+/* Fruits */
+.fruit {
+  position: absolute;
+  font-size: 1.5rem;
+  cursor: pointer;
+  animation: fruitDangle 2s ease-in-out infinite;
+  transition: transform 0.15s;
+  z-index: 3;
+  filter: drop-shadow(0 2px 4px rgba(0,0,0,0.3));
+}
+.fruit:hover { transform: scale(1.3) !important; }
+.fruit.popping { animation: fruitPop 0.5s ease-out forwards; }
+@keyframes fruitDangle {
+  0%, 100% { transform: rotate(-5deg); }
+  50% { transform: rotate(5deg); }
+}
+@keyframes fruitPop {
+  0% { transform: scale(1); opacity: 1; }
+  30% { transform: scale(1.8); opacity: 0.8; }
+  100% { transform: scale(0); opacity: 0; }
+}
+
+/* Water drop animation */
+.water-drop-anim {
+  position: absolute;
+  font-size: 2rem;
+  animation: waterFall 0.6s ease-in forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+@keyframes waterFall {
+  0% { transform: translateY(-60px); opacity: 1; }
+  80% { transform: translateY(0); opacity: 1; }
+  100% { transform: translateY(10px); opacity: 0; }
+}
+
+/* Fertilize spark */
+.fert-spark-anim {
+  position: absolute;
+  font-size: 1.5rem;
+  animation: sparkFloat 0.8s ease-out forwards;
+  pointer-events: none;
+  z-index: 10;
+}
+@keyframes sparkFloat {
+  0% { transform: translateY(0) scale(0.5); opacity: 0; }
+  50% { transform: translateY(-20px) scale(1.2); opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.8); opacity: 0; }
+}
+
+/* Plant message bubble */
+.plant-msg-bubble {
+  position: absolute;
+  top: 5%;
+  left: 50%;
+  transform: translateX(-50%);
+  background: rgba(255, 255, 255, 0.12);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  padding: 8px 16px;
+  max-width: 90%;
+  text-align: center;
+  z-index: 15;
+  animation: msgFadeIn 0.3s ease-out;
+  pointer-events: none;
+}
+.plant-msg-bubble .msg-text {
+  font-size: 0.95rem;
+  color: #4ade80;
+  font-weight: 600;
+}
+@keyframes msgFadeIn {
+  from { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+  to { opacity: 1; transform: translateX(-50%) translateY(0); }
+}
+@keyframes msgFadeOut {
+  from { opacity: 1; transform: translateX(-50%) translateY(0); }
+  to { opacity: 0; transform: translateX(-50%) translateY(-10px); }
+}
+
+/* === ACTION BAR === */
+#action-bar {
+  display: flex;
+  gap: 8px;
+  justify-content: center;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+.action-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 2px;
+  padding: 10px 16px;
+  border-radius: 12px;
+  border: 2px solid transparent;
+  cursor: pointer;
+  font-size: 0.85rem;
+  font-weight: 600;
+  transition: transform 0.15s, border-color 0.15s;
+  min-width: 90px;
+  text-align: center;
+}
+.action-btn:hover { transform: translateY(-2px); }
+.action-btn:active { transform: scale(0.95); }
+.action-btn:disabled { opacity: 0.4; cursor: not-allowed; transform: none; }
+.action-btn .emoji { font-size: 1.5rem; }
+#action-water { background: rgba(59, 130, 246, 0.15); border-color: rgba(59, 130, 246, 0.3); color: #60a5fa; }
+#action-fertilize { background: rgba(245, 158, 11, 0.15); border-color: rgba(245, 158, 11, 0.3); color: #fbbf24; }
+#action-quiz { background: rgba(168, 85, 247, 0.15); border-color: rgba(168, 85, 247, 0.3); color: #c084fc; }
+
+/* Resource needed hint */
+#resource-hint {
+  text-align: center;
+  font-size: 0.85rem;
+  color: #f59e0b;
+  padding: 6px 12px;
+  margin-bottom: 4px;
+  background: rgba(245, 158, 11, 0.1);
+  border-radius: 8px;
+  display: none;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+/* === QUIZ OVERLAY === */
+#quiz-overlay {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: linear-gradient(180deg, rgba(15, 23, 42, 0.97) 0%, rgba(15, 23, 42, 0.99) 100%);
+  border-radius: 20px 20px 0 0;
+  padding: 20px;
+  max-width: 520px;
+  margin: 0 auto;
+  animation: slideUp 0.3s ease-out;
+  z-index: 50;
+  display: none;
+  max-height: 85vh;
+  overflow-y: auto;
+}
+@keyframes slideUp {
+  from { transform: translateY(100%); }
+  to { transform: translateY(0); }
+}
+#quiz-close {
+  position: absolute;
+  top: 12px;
+  right: 16px;
+  background: rgba(255,255,255,0.1);
+  border: none;
+  color: #94a3b8;
+  font-size: 1.2rem;
+  cursor: pointer;
+  width: 32px;
+  height: 32px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+#quiz-close:hover { background: rgba(255,255,255,0.2); }
+#quiz-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.quiz-badge {
+  padding: 4px 10px;
+  border-radius: 20px;
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+.badge-category { background: rgba(59, 130, 246, 0.2); color: #60a5fa; }
+.badge-difficulty { background: rgba(74, 222, 128, 0.2); color: #4ade80; }
+.badge-difficulty.diff-2 { background: rgba(251, 191, 36, 0.2); color: #fbbf24; }
+.badge-difficulty.diff-3 { background: rgba(239, 68, 68, 0.2); color: #f87171; }
+#quiz-lives { display: flex; gap: 2px; }
+.heart { font-size: 1.1rem; transition: transform 0.2s, opacity 0.2s; }
+.heart.lost { opacity: 0.2; transform: scale(0.7); }
+
+/* Timer bar */
+#timer-track {
+  width: 100%;
+  height: 6px;
+  background: rgba(255,255,255,0.1);
+  border-radius: 3px;
+  overflow: hidden;
+  margin-bottom: 16px;
+}
+#timer-fill {
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #4ade80, #22c55e);
+  border-radius: 3px;
+  transition: width 0.1s linear, background 0.3s;
+}
+#timer-fill.warning { background: linear-gradient(90deg, #ef4444, #f97316); animation: pulse 0.5s ease-in-out infinite; }
+@keyframes pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0.6; }
+}
+
+/* Question */
+#question-text {
+  font-size: 1.05rem;
+  font-weight: 600;
+  margin-bottom: 16px;
+  line-height: 1.5;
+  min-height: 48px;
+}
+
+/* Options */
+#options-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+.option-btn {
+  background: rgba(255,255,255,0.05);
+  border: 2px solid rgba(255,255,255,0.1);
+  border-radius: 10px;
+  padding: 12px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: all 0.2s;
+  text-align: left;
+}
+.option-btn:hover:not(:disabled) { border-color: rgba(74, 222, 128, 0.5); background: rgba(74, 222, 128, 0.1); }
+.option-btn:disabled { cursor: default; }
+.option-btn.correct { border-color: #4ade80; background: rgba(74, 222, 128, 0.2); color: #4ade80; font-weight: 700; }
+.option-btn.wrong { border-color: #f87171; background: rgba(248, 113, 113, 0.15); color: #f87171; }
+
+/* Quiz feedback */
+#quiz-feedback {
+  text-align: center;
+  font-size: 0.9rem;
+  margin-top: 8px;
+  min-height: 24px;
+}
+.feedback-correct { color: #4ade80; }
+.feedback-wrong { color: #f87171; }
+
+/* Quiz results */
+#quiz-results {
+  text-align: center;
+  padding: 20px 0;
+}
+#quiz-results h3 { color: #fbbf24; margin-bottom: 8px; font-size: 1.3rem; }
+#quiz-results p { color: #94a3b8; margin-bottom: 16px; }
+
+/* === CELEBRATION === */
+#celebration {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.92);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+  padding: 20px;
+  text-align: center;
+}
+#celebration h2 {
+  font-size: 1.8rem;
+  color: #fbbf24;
+  margin-bottom: 4px;
+  text-shadow: 0 0 20px rgba(251, 191, 36, 0.4);
+}
+#celebration .subtitle { color: #94a3b8; margin-bottom: 20px; font-size: 0.95rem; }
+#blessings-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  width: 100%;
+  max-width: 400px;
+  margin-bottom: 24px;
+  max-height: 50vh;
+  overflow-y: auto;
+}
+.blessing-card {
+  background: linear-gradient(135deg, rgba(251, 191, 36, 0.1), rgba(251, 191, 36, 0.05));
+  border: 1px solid rgba(251, 191, 36, 0.2);
+  border-radius: 12px;
+  padding: 12px 16px;
+  animation: blessFadeIn 0.5s ease-out both;
+}
+.blessing-card .zh {
+  font-size: 1.3rem;
+  color: #fbbf24;
+  font-weight: 700;
+  margin-bottom: 2px;
+  text-shadow: 0 0 10px rgba(251, 191, 36, 0.3);
+}
+.blessing-card .en { color: #94a3b8; font-size: 0.85rem; }
+@keyframes blessFadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Confetti */
+.confetti-piece {
+  position: fixed;
+  font-size: 1.2rem;
+  animation: confettiFall linear forwards;
+  pointer-events: none;
+  z-index: 101;
+}
+@keyframes confettiFall {
+  0% { transform: translateY(-20px) rotate(0deg); opacity: 1; }
+  100% { transform: translateY(100vh) rotate(720deg); opacity: 0; }
+}
+
+/* === FRUIT BLESSING POPUP === */
+#fruit-blessing-popup {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.85);
+  display: none;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 60;
+  padding: 20px;
+}
+#fruit-blessing-popup .zh {
+  font-size: 2rem;
+  color: #fbbf24;
+  font-weight: 700;
+  text-shadow: 0 0 30px rgba(251, 191, 36, 0.5);
+  animation: blessZoomIn 0.5s ease-out;
+  margin-bottom: 8px;
+  text-align: center;
+  line-height: 1.4;
+}
+@keyframes blessZoomIn {
+  0% { transform: scale(0.3); opacity: 0; }
+  60% { transform: scale(1.1); opacity: 1; }
+  100% { transform: scale(1); }
+}
+#fruit-blessing-popup .close-hint {
+  margin-top: 24px;
+  color: #64748b;
+  font-size: 0.8rem;
+  animation: blessFadeIn 0.5s ease-out 0.8s both;
+}
+
+/* === PARTICLE BURST === */
+.particle {
+  position: absolute;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  pointer-events: none;
+  animation: particleBurst 0.6s ease-out forwards;
+}
+@keyframes particleBurst {
+  0% { transform: translate(0, 0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--px), var(--py)) scale(0); opacity: 0; }
+}
+
+/* === AD PLACEHOLDER === */
+.ad-placeholder {
+  background: rgba(255,255,255,0.03);
+  border: 1px dashed rgba(255,255,255,0.1);
+  padding: 12px;
+  text-align: center;
+  border-radius: 8px;
+  color: #475569;
+  font-size: 0.75rem;
+  margin: 8px 0;
+}
+
+/* === RESPONSIVE === */
+@media (max-width: 640px) {
+  #game-container { padding: 8px; }
+  #plant-area { min-height: 220px; }
+  .action-btn { padding: 8px 12px; min-width: 80px; font-size: 0.8rem; }
+  .action-btn .emoji { font-size: 1.3rem; }
+  #question-text { font-size: 0.95rem; }
+  #options-grid { grid-template-columns: 1fr; }
+  #start-screen h1 { font-size: 1.6rem; }
+  #plant-preview { font-size: 3rem; }
+}
+@media (max-width: 400px) {
+  #resource-bar { font-size: 0.85rem; }
+  .action-btn { min-width: 70px; }
+  #celebration h2 { font-size: 1.4rem; }
+  #fruit-blessing-popup .zh { font-size: 2rem; }
+}
+</style>
+</head>
+<body>
+
+<!-- START SCREEN -->
+<div id="start-screen">
+  <h1>Plant Blessing</h1>
+  <p>Grow your plant by answering trivia, then discover lucky blessings!</p>
+  <div id="plant-preview"></div>
+  <div id="plant-preview-text"></div>
+  <button class="btn" id="btn-new">🌱 New Plant</button>
+  <button class="btn btn-secondary" id="btn-continue" style="display:none">🌿 Continue Growing</button>
+</div>
+
+<!-- GAME CONTAINER -->
+<div id="game-container" style="display:none">
+  <div id="game-title">🌱 Plant Blessing</div>
+
+  <div id="resource-bar">
+    <div class="resource"><span class="icon">💧</span><span class="count" id="res-water">0</span></div>
+    <div id="stage-label">Stage: Seed</div>
+    <div class="resource"><span class="icon">🧪</span><span class="count" id="res-fert">0</span></div>
+  </div>
+
+  <div id="progress-container">
+    <div class="progress-label" id="prog-label">Water</div>
+    <div class="progress-row">
+      <span class="progress-icon">💧</span>
+      <div class="progress-track"><div class="progress-fill water" id="prog-water" style="width:0%"></div></div>
+      <span class="progress-nums" id="prog-water-nums">0/2</span>
+    </div>
+    <div class="progress-row">
+      <span class="progress-icon">🧪</span>
+      <div class="progress-track"><div class="progress-fill fert" id="prog-fert" style="width:0%"></div></div>
+      <span class="progress-nums" id="prog-fert-nums">0/1</span>
+    </div>
+  </div>
+
+  <div id="plant-area"></div>
+
+  <div id="resource-hint">💧 Water and 🧪 Fertilizer are empty! 🌱 Your plant needs you — answer the quiz to earn more!</div>
+
+  <div id="action-bar">
+    <button class="action-btn" id="action-water" disabled onclick="doWater()">
+      <span class="emoji">💧</span>
+      <span>Water</span>
+    </button>
+    <button class="action-btn" id="action-fertilize" disabled onclick="doFertilize()">
+      <span class="emoji">🧪</span>
+      <span>Fertilize</span>
+    </button>
+    <button class="action-btn" id="action-quiz" onclick="startQuiz()">
+      <span class="emoji">❓</span>
+      <span>Quiz</span>
+    </button>
+  </div>
+
+  <div class="ad-placeholder"><p>Advertisement</p></div>
+</div>
+
+<!-- QUIZ OVERLAY -->
+<div id="quiz-overlay">
+  <button id="quiz-close" onclick="closeQuiz()">&times;</button>
+  <div id="quiz-header">
+    <span class="quiz-badge badge-category" id="quiz-category">Science</span>
+    <span class="quiz-badge badge-difficulty" id="quiz-difficulty">Easy</span>
+    <div id="quiz-lives"></div>
+  </div>
+  <div id="timer-track"><div id="timer-fill"></div></div>
+  <div id="question-text"></div>
+  <div id="options-grid"></div>
+  <div id="quiz-feedback"></div>
+</div>
+
+<!-- FRUIT BLESSING POPUP -->
+<div id="fruit-blessing-popup">
+  <div class="zh"></div>
+  <div class="close-hint">Tap anywhere to continue</div>
+</div>
+
+<!-- CELEBRATION -->
+<div id="celebration">
+  <h2>Your Plant Has Blossomed!</h2>
+  <p class="subtitle">Here are your blessings:</p>
+  <div id="blessings-list"></div>
+  <button class="btn btn-gold" id="btn-celebrate-restart">🌱 Grow Another Plant</button>
+</div>
+
+<script>
+// ====== DATA ======
+var PLANTS = [
+  { id:'rose', name:'Rose', emoji:'🌹', color:'#e74c3c', leafColor:'#27ae60' },
+  { id:'sunflower', name:'Sunflower', emoji:'🌻', color:'#f39c12', leafColor:'#27ae60' },
+  { id:'cherry', name:'Cherry Blossom', emoji:'🌸', color:'#fd79a8', leafColor:'#00b894' },
+  { id:'cactus', name:'Cactus', emoji:'🌵', color:'#27ae60', leafColor:'#1e8449' },
+  { id:'bamboo', name:'Bamboo', emoji:'🎋', color:'#2ecc71', leafColor:'#1abc9c' },
+  { id:'tulip', name:'Tulip', emoji:'🌷', color:'#e056a0', leafColor:'#27ae60' },
+  { id:'oak', name:'Oak Tree', emoji:'🌳', color:'#6b8e23', leafColor:'#556b2f' },
+  { id:'maple', name:'Maple', emoji:'🍁', color:'#e74c3c', leafColor:'#d35400' },
+  { id:'palm', name:'Palm Tree', emoji:'🌴', color:'#27ae60', leafColor:'#16a085' },
+  { id:'hibiscus', name:'Hibiscus', emoji:'🌺', color:'#ff6b81', leafColor:'#27ae60' }
+];
+
+var STAGES = [
+  { name:'Seed',     waterNeeded:3, fertNeeded:2, stemH:1, flowerSize:0 },
+  { name:'Sprout',   waterNeeded:3, fertNeeded:2, stemH:2, flowerSize:0 },
+  { name:'Seedling', waterNeeded:3, fertNeeded:3, stemH:3, flowerSize:0 },
+  { name:'Growing',  waterNeeded:3, fertNeeded:3, stemH:4, flowerSize:0.8 },
+  { name:'Flowering',waterNeeded:4, fertNeeded:3, stemH:5, flowerSize:1.2 },
+  { name:'Mature',   waterNeeded:0, fertNeeded:0, stemH:6, flowerSize:1.5 }
+];
+
+var PLANT_MESSAGES = [
+  "I'm sprouting!",
+  "I'm growing!",
+  "Thank you for your hard work, master!",
+  "You're amazing, master!",
+  "I'm so happy, master!",
+  "Thanks for taking care of me, I'll grow big!",
+  "I feel so warm!",
+  "Look how tall I've grown!",
+  "You're the best, master!",
+  "I'm about to bloom, wait for me!",
+  "Wow, I bloomed a beautiful flower!",
+  "I'm mature now, thank you master!",
+  "I love growing here!",
+  "More water please, I'm thirsty!",
+  "This fertilizer is delicious!",
+];
+
+var BLESSINGS = [
+  { text:'May you be prosperous and wealthy' },
+  { text:'May all your wishes come true' },
+  { text:'Wishing you good health' },
+  { text:'May all your heart\'s desires be fulfilled' },
+  { text:'May you have abundance year after year' },
+  { text:'May you advance step by step' },
+  { text:'Peace and joy to you' },
+  { text:'Happiness to your whole family' },
+  { text:'Good fortune according to your wishes' },
+  { text:'May wealth flow in from all directions' },
+  { text:'May your future be as bright as brocade' },
+  { text:'May everything go smoothly' },
+  { text:'May flowers bloom bringing wealth and honor' },
+  { text:'May prosperity and auspiciousness abound' },
+  { text:'May your blessings be as vast as the East Sea' }
+];
+
+var QUESTIONS = [
+  // EASY (difficulty 1)
+  {q:"What planet is known as the Red Planet?",o:["Venus","Mars","Jupiter","Saturn"],c:1,cat:"Science",d:1},
+  {q:"Which ocean is the largest?",o:["Atlantic","Indian","Pacific","Arctic"],c:2,cat:"Geography",d:1},
+  {q:"How many continents are there on Earth?",o:["5","6","7","8"],c:2,cat:"Geography",d:1},
+  {q:"What is the largest mammal?",o:["Elephant","Blue Whale","Giraffe","Hippopotamus"],c:1,cat:"Nature",d:1},
+  {q:"What gas do plants absorb from the air?",o:["Oxygen","Nitrogen","Carbon Dioxide","Hydrogen"],c:2,cat:"Science",d:1},
+  {q:"Which country is home to the Eiffel Tower?",o:["Italy","Spain","Germany","France"],c:3,cat:"Geography",d:1},
+  {q:"What is the hardest natural substance?",o:["Gold","Iron","Diamond","Quartz"],c:2,cat:"Science",d:1},
+  {q:"How many legs does a spider have?",o:["6","8","10","4"],c:1,cat:"Nature",d:1},
+  {q:"What color is a ruby?",o:["Blue","Green","Red","Yellow"],c:2,cat:"Nature",d:1},
+  {q:"Who wrote Romeo and Juliet?",o:["Dickens","Shakespeare","Austen","Twain"],c:1,cat:"Literature",d:1},
+  {q:"What is the capital of Japan?",o:["Beijing","Seoul","Tokyo","Bangkok"],c:2,cat:"Geography",d:1},
+  {q:"How many days are in a leap year?",o:["364","365","366","367"],c:2,cat:"Science",d:1},
+  {q:"What animal is known as man's best friend?",o:["Cat","Horse","Dog","Parrot"],c:2,cat:"Nature",d:1},
+  {q:"Which sport uses a shuttlecock?",o:["Tennis","Badminton","Squash","Ping Pong"],c:1,cat:"Sports",d:1},
+  {q:"What is the boiling point of water in Celsius?",o:["90","95","100","110"],c:2,cat:"Science",d:1},
+  {q:"How many colors are in a rainbow?",o:["5","6","7","8"],c:2,cat:"Science",d:1},
+  {q:"Which organ pumps blood in the human body?",o:["Brain","Lungs","Heart","Liver"],c:2,cat:"Science",d:1},
+  {q:"What is the largest desert in the world?",o:["Gobi","Sahara","Antarctic","Arabian"],c:2,cat:"Geography",d:1},
+  {q:"Who painted the Mona Lisa?",o:["Van Gogh","Picasso","Da Vinci","Monet"],c:2,cat:"Pop Culture",d:1},
+  {q:"What is the currency of the United Kingdom?",o:["Euro","Dollar","Pound","Franc"],c:2,cat:"Pop Culture",d:1},
+  // MEDIUM (difficulty 2)
+  {q:"What year did World War II end?",o:["1943","1944","1945","1946"],c:2,cat:"History",d:2},
+  {q:"Which element has the chemical symbol 'Au'?",o:["Silver","Gold","Aluminum","Argon"],c:1,cat:"Science",d:2},
+  {q:"What is the smallest country in the world?",o:["Monaco","Vatican City","San Marino","Liechtenstein"],c:1,cat:"Geography",d:2},
+  {q:"Who discovered penicillin?",o:["Pasteur","Fleming","Koch","Jenner"],c:1,cat:"Science",d:2},
+  {q:"What is the longest river in the world?",o:["Amazon","Yangtze","Nile","Mississippi"],c:2,cat:"Geography",d:2},
+  {q:"Which planet has the most moons?",o:["Jupiter","Saturn","Uranus","Neptune"],c:1,cat:"Science",d:2},
+  {q:"What language has the most native speakers?",o:["English","Spanish","Mandarin Chinese","Hindi"],c:2,cat:"Pop Culture",d:2},
+  {q:"In which year was the first iPhone released?",o:["2005","2006","2007","2008"],c:2,cat:"Pop Culture",d:2},
+  {q:"What is the speed of light approximately?",o:["150,000 km/s","300,000 km/s","500,000 km/s","1,000,000 km/s"],c:1,cat:"Science",d:2},
+  {q:"Which country hosted the 2016 Summer Olympics?",o:["China","UK","Brazil","Japan"],c:2,cat:"Sports",d:2},
+  {q:"What is the chemical formula for table salt?",o:["NaCl","KCl","CaCl2","NaOH"],c:0,cat:"Science",d:2},
+  {q:"Who wrote the novel 1984?",o:["Huxley","Orwell","Bradbury","Asimov"],c:1,cat:"Literature",d:2},
+  {q:"What is the tallest mountain in the world?",o:["K2","Kangchenjunga","Mount Everest","Lhotse"],c:2,cat:"Geography",d:2},
+  {q:"How many bones are in the adult human body?",o:["196","206","216","226"],c:1,cat:"Science",d:2},
+  {q:"Which empire was ruled by Genghis Khan?",o:["Ottoman","Roman","Mongol","Persian"],c:2,cat:"History",d:2},
+  {q:"What sport is played at Wimbledon?",o:["Cricket","Tennis","Golf","Polo"],c:1,cat:"Sports",d:2},
+  {q:"What is the most abundant gas in Earth's atmosphere?",o:["Oxygen","Carbon Dioxide","Nitrogen","Argon"],c:2,cat:"Science",d:2},
+  // HARD (difficulty 3)
+  {q:"What element has the atomic number 79?",o:["Silver","Platinum","Gold","Mercury"],c:2,cat:"Science",d:3},
+  {q:"In what year did the Berlin Wall fall?",o:["1987","1988","1989","1990"],c:2,cat:"History",d:3},
+  {q:"What is the deepest ocean trench?",o:["Tonga Trench","Mariana Trench","Java Trench","Puerto Rico Trench"],c:1,cat:"Geography",d:3},
+  {q:"Who developed the theory of general relativity?",o:["Newton","Einstein","Bohr","Hawking"],c:1,cat:"Science",d:3},
+  {q:"What is the rarest blood type?",o:["O negative","AB negative","B negative","A negative"],c:1,cat:"Science",d:3},
+  {q:"Which novel begins with 'Call me Ishmael'?",o:["Moby Dick","Great Expectations","Jane Eyre","Dracula"],c:0,cat:"Literature",d:3},
+  {q:"What is the powerhouse of the cell?",o:["Nucleus","Ribosome","Mitochondria","Golgi Apparatus"],c:2,cat:"Science",d:3},
+  {q:"Which country has the most time zones?",o:["Russia","USA","France","China"],c:2,cat:"Geography",d:3},
+  {q:"Who composed The Four Seasons?",o:["Mozart","Bach","Vivaldi","Beethoven"],c:2,cat:"Pop Culture",d:3},
+  {q:"What is the only mammal capable of true flight?",o:["Flying Squirrel","Sugar Glider","Bat","Colugo"],c:2,cat:"Nature",d:3},
+  {q:"Which planet rotates on its side?",o:["Neptune","Uranus","Saturn","Pluto"],c:1,cat:"Science",d:3},
+  {q:"What year was the Declaration of Independence signed?",o:["1774","1775","1776","1777"],c:2,cat:"History",d:3},
+  {q:"What is the largest organ in the human body?",o:["Liver","Brain","Skin","Lungs"],c:2,cat:"Science",d:3},
+  {q:"Who wrote Pride and Prejudice?",o:["Bronte","Austen","Eliot","Shelley"],c:1,cat:"Literature",d:3},
+  {q:"What is the SI unit of electric current?",o:["Volt","Watt","Ampere","Ohm"],c:2,cat:"Science",d:3}
+];
+
+// ====== STATE ======
+var SAVE_KEY = 'plantBlessing_v3';
+var state;
+var quizTimer = null;
+var quizTimeLeft = 30;
+var quizLives = 3;
+var quizAnswered = false;
+var currentQuestion = null;
+
+function defaultState() {
+  var plantIdx = Math.floor(Math.random() * PLANTS.length);
+  return {
+    plantIndex: plantIdx,
+    growthStage: 0,
+    water: 5,
+    fertilizer: 3,
+    waterProgress: 0,
+    fertProgress: 0,
+    usedQuestions: [],
+    fruitsPopped: [],
+    blessings: [],
+    fruitCount: 0,
+    isMature: false,
+    totalCorrect: 0,
+    totalWrong: 0
+  };
+}
+
+function saveState() {
+  try { localStorage.setItem(SAVE_KEY, JSON.stringify(state)); } catch(e) {}
+}
+function loadState() {
+  try {
+    var d = localStorage.getItem(SAVE_KEY);
+    if (d) { state = JSON.parse(d); return true; }
+  } catch(e) {}
+  return false;
+}
+function clearSave() {
+  try { localStorage.removeItem(SAVE_KEY); } catch(e) {}
+}
+
+// ====== HELPERS ======
+function $(sel) { return document.querySelector(sel); }
+function $$(sel) { return document.querySelectorAll(sel); }
+
+function shuffle(arr) {
+  var a = arr.slice();
+  for (var i = a.length - 1; i > 0; i--) {
+    var j = Math.floor(Math.random() * (i + 1));
+    var tmp = a[i]; a[i] = a[j]; a[j] = tmp;
+  }
+  return a;
+}
+
+function showPlantMessage() {
+  var area = $('#plant-area');
+  var existing = area.querySelector('.plant-msg-bubble');
+  if (existing) existing.remove();
+
+  var msg = PLANT_MESSAGES[Math.floor(Math.random() * PLANT_MESSAGES.length)];
+  var bubble = document.createElement('div');
+  bubble.className = 'plant-msg-bubble';
+  bubble.innerHTML = '<div class="msg-text">' + msg + '</div>';
+  area.appendChild(bubble);
+
+  setTimeout(function() {
+    if (bubble.parentNode) {
+      bubble.style.animation = 'msgFadeOut 0.4s ease-out forwards';
+      setTimeout(function() { if (bubble.parentNode) bubble.remove(); }, 400);
+    }
+  }, 2500);
+}
+
+function getAvailableQuestions() {
+  var diff;
+  if (state.growthStage <= 1) diff = 1;
+  else if (state.growthStage <= 3) diff = 2;
+  else diff = 3;
+  return QUESTIONS.filter(function(q) { return q.d === diff && state.usedQuestions.indexOf(q.q) === -1; });
+}
+
+// ====== RENDERING ======
+function renderStartScreen() {
+  var hasSave = loadState();
+  var plant = PLANTS[state ? state.plantIndex : 0];
+  if (!hasSave) {
+    state = defaultState();
+    plant = PLANTS[state.plantIndex];
+  }
+  $('#plant-preview').textContent = plant.emoji;
+  $('#plant-preview-text').textContent = 'Your plant: ' + plant.name;
+  if (hasSave && state.growthStage > 0) {
+    $('#btn-continue').style.display = 'inline-block';
+  } else {
+    $('#btn-continue').style.display = 'none';
+  }
+}
+
+function showGame() {
+  $('#start-screen').style.display = 'none';
+  $('#game-container').style.display = 'flex';
+  renderAll();
+}
+
+function renderAll() {
+  var plant = PLANTS[state.plantIndex];
+  var stage = STAGES[state.growthStage];
+
+  // Resources
+  $('#res-water').textContent = state.water;
+  $('#res-fert').textContent = state.fertilizer;
+  $('#stage-label').textContent = 'Stage: ' + stage.name;
+
+  // Progress toward next stage
+  var isMaxStage = state.growthStage >= 5;
+  var nextStage = isMaxStage ? null : STAGES[state.growthStage + 1];
+  var wNeeded = isMaxStage ? 0 : nextStage.waterNeeded;
+  var fNeeded = isMaxStage ? 0 : nextStage.fertNeeded;
+
+  if (!isMaxStage) {
+    $('#prog-water').style.width = (state.waterProgress / Math.max(wNeeded, 1) * 100) + '%';
+    $('#prog-fert').style.width = (state.fertProgress / Math.max(fNeeded, 1) * 100) + '%';
+    $('#prog-water-nums').textContent = state.waterProgress + '/' + wNeeded;
+    $('#prog-fert-nums').textContent = state.fertProgress + '/' + fNeeded;
+    $('#prog-label').textContent = 'Progress to ' + nextStage.name;
+    $('#progress-container').style.display = 'block';
+  } else {
+    $('#progress-container').style.display = 'none';
+  }
+
+  // Show hint if no resources and not max stage
+  var needsResources = !isMaxStage && state.water <= 0 && state.fertilizer <= 0;
+  if (needsResources) {
+    $('#resource-hint').style.display = 'block';
+  } else {
+    $('#resource-hint').style.display = 'none';
+  }
+
+  // Buttons: enabled if we have resources AND haven't met next stage requirements yet
+  $('#action-water').disabled = state.water <= 0 || isMaxStage || state.waterProgress >= wNeeded;
+  $('#action-fertilize').disabled = state.fertilizer <= 0 || isMaxStage || state.fertProgress >= fNeeded;
+
+  // Plant art
+  renderPlant(plant, stage);
+}
+
+function renderPlant(plant, stage) {
+  var area = $('#plant-area');
+  var h = '';
+
+  if (state.isMature) {
+    // Show mature plant with fruits
+    h = '<div class="plant-container">';
+    // Flower/fruit area
+    h += '<div class="flower-top" style="font-size:3rem;filter:drop-shadow(0 0 10px ' + plant.color + ')">';
+    h += plant.emoji;
+    h += '</div>';
+    // Stem
+    h += '<div class="stem h6" style="--plant-color:' + plant.color + ';--leaf-color:' + plant.leafColor + ';width:10px">';
+    // Leaves at various heights
+    for (var li = 0; li < 6; li++) {
+      var side = li % 2 === 0 ? 'right' : 'left';
+      var top = 10 + li * 14;
+      h += '<div class="leaf ' + side + '" style="top:' + top + '%;width:24px;height:12px"></div>';
+    }
+    h += '</div>';
+    // Ground
+    h += '<div class="ground"></div>';
+    // Fruits
+    for (var fi = 0; fi < state.fruitCount; fi++) {
+      if (state.fruitsPopped.indexOf(fi) === -1) {
+        var fruitEmojis = ['🍎','🍊','🍋','🍑','🥝'];
+        var fEmoji = fruitEmojis[fi % fruitEmojis.length];
+        var leftPos = 30 + fi * 15;
+        var animDelay = fi * 0.3;
+        h += '<div class="fruit" data-idx="' + fi + '" style="left:' + leftPos + '%;top:35%;animation-delay:' + animDelay + 's" onclick="popFruit(' + fi + ')">' + fEmoji + '</div>';
+      }
+    }
+    h += '</div>';
+  } else {
+    // Regular growth stages
+    h = '<div class="plant-container">';
+    if (state.growthStage === 0) {
+      // Seed - just a brown circle
+      h += '<div style="width:40px;height:40px;border-radius:50%;background:radial-gradient(circle at 35% 35%,#a0785a,#654321);box-shadow:inset -3px -3px 6px rgba(0,0,0,0.3),0 2px 8px rgba(0,0,0,0.3)"></div>';
+    } else {
+      // Stem-based growth
+      if (state.growthStage >= 4) {
+        h += '<div class="flower-top" style="font-size:' + (stage.flowerSize * 1.8) + 'rem;color:' + plant.color + ';filter:drop-shadow(0 0 8px ' + plant.color + ')">';
+        h += plant.emoji;
+        h += '</div>';
+      } else if (state.growthStage === 3) {
+        h += '<div class="flower-top" style="font-size:' + (stage.flowerSize * 1.5) + 'rem;color:' + plant.color + ';opacity:0.6">';
+        h += '🌿';
+        h += '</div>';
+      } else {
+        h += '<div class="flower-top" style="font-size:' + (1 + state.growthStage * 0.5) + 'rem">';
+        if (state.growthStage === 1) h += '🌱';
+        else if (state.growthStage === 2) h += '🪴';
+        h += '</div>';
+      }
+      h += '<div class="stem h' + stage.stemH + '" style="--plant-color:' + plant.color + ';--leaf-color:' + plant.leafColor + '">';
+      if (state.growthStage >= 2) {
+        var leafCount = state.growthStage === 2 ? 2 : state.growthStage === 3 ? 4 : 6;
+        for (var li2 = 0; li2 < leafCount; li2++) {
+          var side2 = li2 % 2 === 0 ? 'right' : 'left';
+          var top2 = 8 + li2 * (leafCount > 2 ? 12 : 20);
+          h += '<div class="leaf ' + side2 + '" style="top:' + top2 + '%"></div>';
+        }
+      }
+      h += '</div>';
+      h += '<div class="ground"></div>';
+    }
+    h += '</div>';
+  }
+
+  area.innerHTML = h;
+}
+
+// ====== WATER / FERTILIZE ======
+function doWater() {
+  if (state.water <= 0 || state.growthStage >= 5) return;
+  var nextStage = STAGES[state.growthStage + 1];
+  if (state.waterProgress >= nextStage.waterNeeded) return;
+
+  state.water--;
+  state.waterProgress++;
+
+  // Animate water drop
+  var area = $('#plant-area');
+  var drop = document.createElement('div');
+  drop.className = 'water-drop-anim';
+  drop.textContent = '💧';
+  drop.style.left = '50%';
+  drop.style.top = '20%';
+  area.appendChild(drop);
+  setTimeout(function() { if (drop.parentNode) drop.remove(); }, 700);
+
+  checkGrowth();
+  saveState();
+  renderAll();
+
+  // Show plant message AFTER rendering so it isn't overwritten
+  showPlantMessage();
+}
+
+function doFertilize() {
+  if (state.fertilizer <= 0 || state.growthStage >= 5) return;
+  var nextStage = STAGES[state.growthStage + 1];
+  if (state.fertProgress >= nextStage.fertNeeded) return;
+
+  state.fertilizer--;
+  state.fertProgress++;
+
+  // Animate fertilizer spark
+  var area = $('#plant-area');
+  var spark = document.createElement('div');
+  spark.className = 'fert-spark-anim';
+  spark.textContent = '✨';
+  spark.style.left = (40 + Math.random() * 20) + '%';
+  spark.style.top = (30 + Math.random() * 20) + '%';
+  area.appendChild(spark);
+  setTimeout(function() { if (spark.parentNode) spark.remove(); }, 900);
+
+  checkGrowth();
+  saveState();
+  renderAll();
+
+  // Show plant message AFTER rendering so it isn't overwritten
+  showPlantMessage();
+}
+
+function checkGrowth() {
+  if (state.growthStage >= 5) return;
+  var nextStage = STAGES[state.growthStage + 1];
+  if (state.waterProgress >= nextStage.waterNeeded && state.fertProgress >= nextStage.fertNeeded) {
+    // Advance stage
+    state.growthStage++;
+    state.waterProgress = 0;
+    state.fertProgress = 0;
+
+    // Show special stage-up message
+    showPlantMessage();
+
+    if (state.growthStage >= 5) {
+      // Mature! Generate fruits
+      state.isMature = true;
+      state.fruitCount = 3 + Math.floor(Math.random() * 3); // 3-5 fruits
+      state.blessings = shuffle(BLESSINGS).slice(0, state.fruitCount);
+      state.fruitsPopped = [];
+    }
+  }
+}
+
+// ====== QUIZ ======
+function startQuiz() {
+  var available = getAvailableQuestions();
+  if (available.length === 0) {
+    // Reset used questions if all used
+    state.usedQuestions = [];
+    available = getAvailableQuestions();
+  }
+  if (available.length === 0) return;
+
+  quizLives = 3;
+  quizAnswered = false;
+  $('#quiz-overlay').style.display = 'block';
+  renderLives();
+  nextQuestion();
+}
+
+function renderLives() {
+  var h = '';
+  for (var i = 0; i < 3; i++) {
+    h += '<span class="heart' + (i >= quizLives ? ' lost' : '') + '">❤️</span>';
+  }
+  $('#quiz-lives').innerHTML = h;
+}
+
+function nextQuestion() {
+  if (quizTimer) { clearInterval(quizTimer); quizTimer = null; }
+  quizAnswered = false;
+  quizTimeLeft = 30;
+
+  var available = getAvailableQuestions();
+  if (available.length === 0) {
+    closeQuiz();
+    return;
+  }
+
+  var q = available[Math.floor(Math.random() * available.length)];
+  state.usedQuestions.push(q.q);
+  saveState();
+  currentQuestion = q;
+
+  // Header
+  $('#quiz-category').textContent = q.cat;
+  var diffEl = $('#quiz-difficulty');
+  diffEl.textContent = q.d === 1 ? 'Easy' : q.d === 2 ? 'Medium' : 'Hard';
+  diffEl.className = 'quiz-badge badge-difficulty' + (q.d === 2 ? ' diff-2' : q.d === 3 ? ' diff-3' : '');
+
+  renderLives();
+
+  // Question
+  $('#question-text').textContent = q.q;
+
+  // Options
+  var labels = ['A', 'B', 'C', 'D'];
+  var grid = $('#options-grid');
+  grid.innerHTML = '';
+  for (var i = 0; i < q.o.length; i++) {
+    var btn = document.createElement('button');
+    btn.className = 'option-btn';
+    btn.textContent = labels[i] + '. ' + q.o[i];
+    btn.setAttribute('data-idx', i);
+    btn.setAttribute('data-correct', q.c);
+    btn.addEventListener('click', handleAnswer);
+    grid.appendChild(btn);
+  }
+
+  $('#quiz-feedback').innerHTML = '';
+
+  // Timer
+  $('#timer-fill').style.width = '100%';
+  $('#timer-fill').className = 'progress-fill';
+
+  quizTimer = setInterval(function() {
+    quizTimeLeft -= 0.1;
+    var pct = (quizTimeLeft / 30) * 100;
+    $('#timer-fill').style.width = pct + '%';
+    if (quizTimeLeft <= 5) {
+      $('#timer-fill').className = 'progress-fill warning';
+    }
+    if (quizTimeLeft <= 0) {
+      clearInterval(quizTimer);
+      quizTimer = null;
+      if (!quizAnswered) {
+        handleTimeout(q);
+      }
+    }
+  }, 100);
+}
+
+function handleAnswer(e) {
+  if (quizAnswered) return;
+  quizAnswered = true;
+  if (quizTimer) { clearInterval(quizTimer); quizTimer = null; }
+
+  var btn = e.currentTarget;
+  var idx = parseInt(btn.getAttribute('data-idx'));
+  var q = currentQuestion;
+  if (!q) { closeQuiz(); return; }
+
+  // Disable all options
+  $$('.option-btn').forEach(function(b) { b.disabled = true; });
+
+  // Highlight correct
+  $$('.option-btn').forEach(function(b) {
+    if (parseInt(b.getAttribute('data-idx')) === q.c) {
+      b.classList.add('correct');
+    }
+  });
+
+  if (idx === q.c) {
+    // Correct
+    state.water++;
+    state.fertilizer++;
+    state.totalCorrect++;
+    $('#quiz-feedback').innerHTML = '<span class="feedback-correct">✅ Correct! +1 💧 +1 🧪</span>';
+  } else {
+    // Wrong
+    btn.classList.add('wrong');
+    quizLives--;
+    state.totalWrong++;
+    renderLives();
+    $('#quiz-feedback').innerHTML = '<span class="feedback-wrong">❌ Wrong! Lives left: ' + quizLives + '</span>';
+
+    if (quizLives <= 0) {
+      setTimeout(function() {
+        showQuizResults();
+      }, 1500);
+      saveState();
+      return;
+    }
+  }
+
+  saveState();
+
+  // Next question or end
+  setTimeout(function() {
+    if (quizLives > 0 && !state.isMature) {
+      nextQuestion();
+    } else {
+      closeQuiz();
+    }
+  }, 1500);
+}
+
+function handleTimeout(q) {
+  quizAnswered = true;
+  quizLives--;
+  state.totalWrong++;
+  renderLives();
+
+  $$('.option-btn').forEach(function(b) {
+    b.disabled = true;
+    if (parseInt(b.getAttribute('data-idx')) === q.c) {
+      b.classList.add('correct');
+    }
+  });
+
+  $('#quiz-feedback').innerHTML = '<span class="feedback-wrong">⏰ Time\'s up! Lives left: ' + quizLives + '</span>';
+  saveState();
+
+  if (quizLives <= 0) {
+    setTimeout(function() { showQuizResults(); }, 1500);
+  } else {
+    setTimeout(function() { nextQuestion(); }, 1500);
+  }
+}
+
+function showQuizResults() {
+  if (quizTimer) { clearInterval(quizTimer); quizTimer = null; }
+  var overlay = $('#quiz-overlay');
+  overlay.innerHTML =
+    '<div id="quiz-results">' +
+      '<h3>Quiz Over!</h3>' +
+      '<p>You answered ' + state.totalCorrect + ' correctly.</p>' +
+      '<p>💧 Water: ' + state.water + ' | 🧪 Fertilizer: ' + state.fertilizer + '</p>' +
+      '<button class="btn btn-small" onclick="closeQuiz(); startQuiz();">Try Again</button> ' +
+      '<button class="btn btn-small btn-secondary" onclick="closeQuiz()">Close</button>' +
+    '</div>';
+}
+
+function closeQuiz() {
+  if (quizTimer) { clearInterval(quizTimer); quizTimer = null; }
+  $('#quiz-overlay').style.display = 'none';
+  // Restore quiz overlay HTML (since showQuizResults replaces content)
+  restoreQuizOverlay();
+  renderAll();
+}
+
+function restoreQuizOverlay() {
+  var overlay = $('#quiz-overlay');
+  overlay.innerHTML =
+    '<button id="quiz-close" onclick="closeQuiz()">&times;</button>' +
+    '<div id="quiz-header">' +
+      '<span class="quiz-badge badge-category" id="quiz-category"></span>' +
+      '<span class="quiz-badge badge-difficulty" id="quiz-difficulty"></span>' +
+      '<div id="quiz-lives"></div>' +
+    '</div>' +
+    '<div id="timer-track"><div id="timer-fill"></div></div>' +
+    '<div id="question-text"></div>' +
+    '<div id="options-grid"></div>' +
+    '<div id="quiz-feedback"></div>';
+}
+
+// ====== FRUITS ======
+function popFruit(idx) {
+  if (state.fruitsPopped.indexOf(idx) !== -1) return;
+  state.fruitsPopped.push(idx);
+
+  // Show blessing popup
+  var blessing = state.blessings[idx];
+  var popup = $('#fruit-blessing-popup');
+  popup.querySelector('.zh').textContent = blessing.text;
+  popup.querySelector('.en').style.display = 'none';
+  popup.style.display = 'flex';
+
+  // Animate the fruit element
+  var fruitEl = document.querySelector('.fruit[data-idx="' + idx + '"]');
+  if (fruitEl) {
+    // Particle burst
+    spawnParticles(fruitEl);
+    fruitEl.classList.add('popping');
+  }
+
+  saveState();
+
+  // Close popup on tap
+  popup.onclick = function() {
+    popup.style.display = 'none';
+    popup.onclick = null;
+    renderAll();
+
+    // Check if all fruits popped
+    if (state.fruitsPopped.length >= state.fruitCount) {
+      setTimeout(showCelebration, 500);
+    }
+  };
+}
+
+function spawnParticles(el) {
+  var rect = el.getBoundingClientRect();
+  var area = $('#plant-area');
+  var areaRect = area.getBoundingClientRect();
+  var colors = ['#fbbf24', '#f59e0b', '#4ade80', '#60a5fa', '#f87171', '#c084fc'];
+  for (var i = 0; i < 8; i++) {
+    var p = document.createElement('div');
+    p.className = 'particle';
+    p.style.left = (rect.left - areaRect.left + rect.width / 2) + 'px';
+    p.style.top = (rect.top - areaRect.top + rect.height / 2) + 'px';
+    p.style.background = colors[i % colors.length];
+    var angle = (i / 8) * Math.PI * 2;
+    var dist = 30 + Math.random() * 40;
+    p.style.setProperty('--px', Math.cos(angle) * dist + 'px');
+    p.style.setProperty('--py', Math.sin(angle) * dist + 'px');
+    area.appendChild(p);
+    setTimeout(function(pp) { if (pp.parentNode) pp.remove(); }, 700, p);
+  }
+}
+
+// ====== CELEBRATION ======
+function showCelebration() {
+  var celeb = $('#celebration');
+  var list = $('#blessings-list');
+  list.innerHTML = '';
+
+  for (var i = 0; i < state.blessings.length; i++) {
+    var b = state.blessings[i];
+    var card = document.createElement('div');
+    card.className = 'blessing-card';
+    card.style.animationDelay = (i * 0.15) + 's';
+    card.innerHTML = '<div class="zh">' + b.text + '</div>';
+    list.appendChild(card);
+  }
+
+  celeb.style.display = 'flex';
+  spawnConfetti();
+}
+
+function spawnConfetti() {
+  var emojis = ['🎉', '🎊', '✨', '⭐', '🌟', '💫', '🎈', '🎆'];
+  for (var i = 0; i < 30; i++) {
+    (function(delay) {
+      setTimeout(function() {
+        var piece = document.createElement('div');
+        piece.className = 'confetti-piece';
+        piece.textContent = emojis[Math.floor(Math.random() * emojis.length)];
+        piece.style.left = Math.random() * 100 + 'vw';
+        piece.style.animationDuration = (2 + Math.random() * 3) + 's';
+        document.body.appendChild(piece);
+        setTimeout(function() { if (piece.parentNode) piece.remove(); }, 5000);
+      }, delay);
+    })(i * 100);
+  }
+}
+
+function newPlant() {
+  clearSave();
+  state = defaultState();
+  saveState();
+  $('#celebration').style.display = 'none';
+  $('#start-screen').style.display = 'none';
+  $('#game-container').style.display = 'flex';
+  restoreQuizOverlay();
+  renderAll();
+}
+
+function continueGame() {
+  loadState();
+  $('#start-screen').style.display = 'none';
+  $('#game-container').style.display = 'flex';
+  restoreQuizOverlay();
+  renderAll();
+}
+
+function restartFromCelebration() {
+  newPlant();
+}
+
+// ====== INIT ======
+function init() {
+  var hasSave = loadState();
+  if (!hasSave) {
+    state = defaultState();
+  }
+  renderStartScreen();
+}
+
+// Event listeners
+document.getElementById('btn-new').addEventListener('click', newPlant);
+document.getElementById('btn-continue').addEventListener('click', continueGame);
+document.getElementById('action-water').addEventListener('click', doWater);
+document.getElementById('action-fertilize').addEventListener('click', doFertilize);
+document.getElementById('action-quiz').addEventListener('click', startQuiz);
+document.getElementById('btn-celebrate-restart').addEventListener('click', restartFromCelebration);
+
+init();
+</script>
+</body>
+</html>

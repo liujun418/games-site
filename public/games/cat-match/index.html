@@ -6,29 +6,30 @@
 <title>Cat Match - Play Free Online</title>
 <style>
 * { margin: 0; padding: 0; box-sizing: border-box; }
-body { background: #fff0f5; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; color: #4a3535; }
-h1 { color: #ff6b9d; margin-bottom: 8px; font-size: 1.6rem; }
-#info { display: flex; gap: 20px; margin-bottom: 8px; font-size: 1.1rem; font-weight: bold; }
+body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; color: #eee; }
+h1 { color: #ff6b9d; margin-bottom: 8px; font-size: 1.5rem; }
+#info { display: flex; gap: 20px; margin-bottom: 10px; font-size: 1.1rem; font-weight: bold; }
 #score { color: #ff9a3c; }
 #level { color: #a855f7; }
 #timer { color: #4ecdc4; }
-#board { display: grid; grid-template-columns: repeat(8, 52px); gap: 4px; padding: 10px; background: linear-gradient(135deg, #ffe0f0, #e0f0ff); border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); }
-.cell { width: 52px; height: 52px; display: flex; align-items: center; justify-content: center; font-size: 1.8rem; border-radius: 8px; cursor: pointer; user-select: none; background: white; box-shadow: 0 2px 4px rgba(0,0,0,0.1); }
-.cell.selected { background: #ffd700; box-shadow: 0 0 10px rgba(255,215,0,0.6); }
-.cell.eliminated { animation: pop 0.25s forwards; pointer-events: none; }
+#board { display: grid; grid-template-columns: repeat(8, 50px); gap: 4px; padding: 10px; background: #16213e; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); }
+.cell { width: 50px; height: 50px; display: flex; align-items: center; justify-content: center; font-size: 1.7rem; border-radius: 6px; cursor: pointer; user-select: none; background: #0d1117; border: 2px solid transparent; transition: border-color 0.15s; }
+.cell:hover { border-color: #444; }
+.cell.selected { border-color: #ffd700; background: #1a1a2e; }
+.cell.eliminated { animation: pop 0.25s forwards; }
 @keyframes pop { to { transform: scale(0); opacity: 0; } }
 .cell.new { animation: appear 0.2s ease-out; }
 @keyframes appear { from { transform: scale(0.5); opacity: 0; } to { transform: scale(1); opacity: 1; } }
-#game-over { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(255,240,245,0.95); align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
+#game-over { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.9); align-items: center; justify-content: center; flex-direction: column; z-index: 10; }
 #game-over h2 { color: #ff6b9d; font-size: 2rem; margin-bottom: 10px; }
-#final-score { font-size: 1.3rem; color: #ff9a3c; margin-bottom: 16px; font-weight: bold; }
-.btn { background: #ff6b9d; color: white; border: none; padding: 12px 28px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: bold; }
+#final-score { color: #ffd700; font-size: 1.2rem; margin-bottom: 16px; }
+.btn { background: #ff6b9d; color: #fff; border: none; padding: 12px 28px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: bold; }
 .btn:hover { background: #e05580; }
-.ad-placeholder { background: #ffe0ec; padding: 12px; margin: 15px 0; text-align: center; border-radius: 8px; color: #999; font-size: 0.75rem; width: 320px; }
-#float-text { position: fixed; pointer-events: none; font-size: 1.2rem; font-weight: bold; color: #ff9a3c; animation: floatUp 0.6s ease-out forwards; z-index: 20; }
-@keyframes floatUp { to { transform: translateY(-40px); opacity: 0; } }
-#level-banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: linear-gradient(135deg,#ff6b9d,#a855f7); color: white; font-size: 1.6rem; font-weight: bold; padding: 14px 36px; border-radius: 16px; z-index: 15; animation: bannerIn 1.2s ease-out forwards; }
-@keyframes bannerIn { 0%{transform:translate(-50%,-50%) scale(0.3);opacity:0} 20%{transform:translate(-50%,-50%) scale(1.1);opacity:1} 80%{opacity:1} 100%{transform:translate(-50%,-50%) scale(1);opacity:0} }
+.ad-placeholder { background: #16213e; padding: 12px; margin: 15px 0; text-align: center; border-radius: 8px; color: #666; font-size: 0.75rem; }
+#float-text { position: fixed; pointer-events: none; font-size: 1.1rem; font-weight: bold; color: #ffd700; animation: floatUp 0.6s ease-out forwards; z-index: 20; text-shadow: 1px 1px 0 #000; }
+@keyframes floatUp { to { transform: translateY(-35px); opacity: 0; } }
+#banner { position: fixed; top: 50%; left: 50%; transform: translate(-50%,-50%); background: linear-gradient(135deg,#ff6b9d,#a855f7); color: #fff; font-size: 1.5rem; font-weight: bold; padding: 14px 32px; border-radius: 14px; z-index: 15; animation: banIn 1.2s ease-out forwards; white-space: nowrap; }
+@keyframes banIn { 0%{transform:translate(-50%,-50%) scale(0.3);opacity:0} 20%{transform:translate(-50%,-50%) scale(1.1);opacity:1} 80%{opacity:1} 100%{transform:translate(-50%,-50%) scale(1);opacity:0} }
 </style>
 </head>
 <body>
@@ -48,10 +49,11 @@ h1 { color: #ff6b9d; margin-bottom: 8px; font-size: 1.6rem; }
 <script>
 var CATS = ['\u{1F431}','\u{1F408}','\u{1F63A}','\u{1F43E}','\u{1F380}','\u{1F41F}','\u{1F9F6}','\u{1F42D}'];
 var ROWS = 8, COLS = 8, TIME = 60, THRESHOLD = 100;
-var board, score, level, levelScore, timeLeft, running, selected, timer;
+var board, score, level, levelScore, timeLeft, running, animating, selected, timer;
 
-function cats() { return CATS.slice(0, 5 + level - 1 > 8 ? 8 : 5 + level - 1); }
-function rndCat() { return cats()[Math.floor(Math.random() * cats().length)]; }
+function getCatCount() { return Math.min(5 + level - 1, 8); }
+function cats() { return CATS.slice(0, getCatCount()); }
+function rndCat() { return cats()[Math.floor(Math.random() * getCatCount())]; }
 
 function makeBoard() {
   board = [];
@@ -59,7 +61,7 @@ function makeBoard() {
     board[r] = [];
     for (var c = 0; c < COLS; c++) {
       var cat, tries = 0;
-      do { cat = rndCat(); tries++; } while (tries < 20 && ((c>=2 && board[r][c-1]===cat && board[r][c-2]===cat) || (r>=2 && board[r-1][c]===cat && board[r-2][c]===cat)));
+      do { cat = rndCat(); tries++; } while (tries < 30 && ((c>=2&&board[r][c-1]===cat&&board[r][c-2]===cat)||(r>=2&&board[r-1][c]===cat&&board[r-2][c]===cat)));
       board[r][c] = cat;
     }
   }
@@ -78,7 +80,7 @@ function draw(newCells) {
         cell.textContent = board[r][c];
         if (selected && selected.r === r && selected.c === c) cell.classList.add('selected');
         if (newCells && newCells[r+','+c]) cell.classList.add('new');
-        cell.addEventListener('click', (function(rr,cc) { return function() { tap(rr,cc); }; })(r,c));
+        cell.addEventListener('click', (function(rr,cc){return function(){tap(rr,cc);};})(r,c));
       } else {
         cell.style.visibility = 'hidden';
       }
@@ -88,15 +90,15 @@ function draw(newCells) {
 }
 
 function tap(r, c) {
-  if (!running || !board[r][c]) return;
+  if (!running || animating || !board[r][c]) return;
   if (!selected) { selected = {r:r,c:c}; draw(); return; }
   if (selected.r === r && selected.c === c) { selected = null; draw(); return; }
-  var dr = Math.abs(selected.r - r) + Math.abs(selected.c - c);
-  if (dr === 1) {
+  var dist = Math.abs(selected.r - r) + Math.abs(selected.c - c);
+  if (dist === 1) {
     if (board[selected.r][selected.c] === board[r][c]) {
       var sr = selected.r, sc = selected.c;
       selected = null;
-      match(sr, sc, r, c);
+      elim(sr, sc, r, c);
     } else {
       selected = {r:r,c:c};
       draw();
@@ -107,11 +109,12 @@ function tap(r, c) {
   }
 }
 
-function match(r1,c1,r2,c2) {
+function elim(r1,c1,r2,c2) {
+  animating = true;
   score += 10;
   levelScore += 10;
   upd();
-  showFloat('+10', r1, c1);
+  floatTxt('+10', r1, c1);
   var e1 = document.querySelector('[data-r="'+r1+'"][data-c="'+c1+'"]');
   var e2 = document.querySelector('[data-r="'+r2+'"][data-c="'+c2+'"]');
   if (e1) e1.classList.add('eliminated');
@@ -129,6 +132,8 @@ function match(r1,c1,r2,c2) {
       upd();
       banner('Level ' + level + '!');
     }
+    // Delay resetting animating so rapid clicks after redraw don't hit stale state
+    setTimeout(function() { animating = false; }, 50);
   }, 260);
 }
 
@@ -142,9 +147,18 @@ function gravity() {
 
 function fill() {
   var nc = {};
-  for (var c = 0; c < COLS; c++)
-    for (var r = 0; r < ROWS; r++)
-      if (!board[r][c]) { board[r][c] = rndCat(); nc[r+','+c] = true; }
+  for (var c = 0; c < COLS; c++) {
+    for (var r = 0; r < ROWS; r++) {
+      if (!board[r][c]) {
+        var cat;
+        // Avoid placing same cat adjacent horizontally
+        var tries = 0;
+        do { cat = rndCat(); tries++; } while (tries < 20 && c > 0 && board[r][c-1] === cat);
+        board[r][c] = cat;
+        nc[r+','+c] = true;
+      }
+    }
+  }
   return nc;
 }
 
@@ -152,11 +166,9 @@ function upd() {
   document.getElementById('score').textContent = 'Score: ' + score;
   document.getElementById('level').textContent = 'Level ' + level;
   document.getElementById('timer').textContent = 'Time: ' + timeLeft + 's';
-  var el = document.getElementById('timer');
-  el.style.color = timeLeft <= 10 ? '#ff6b6b' : '#4ecdc4';
 }
 
-function showFloat(txt, r, c) {
+function floatTxt(txt, r, c) {
   var cell = document.querySelector('[data-r="'+r+'"][data-c="'+c+'"]');
   if (!cell) return;
   var rc = cell.getBoundingClientRect();
@@ -171,7 +183,7 @@ function showFloat(txt, r, c) {
 
 function banner(txt) {
   var d = document.createElement('div');
-  d.id = 'level-banner';
+  d.id = 'banner';
   d.textContent = txt;
   document.body.appendChild(d);
   setTimeout(function(){ if(d.parentNode) d.remove(); }, 1300);
@@ -179,7 +191,7 @@ function banner(txt) {
 
 function start() {
   score = 0; level = 1; levelScore = 0; timeLeft = TIME;
-  selected = null; running = true;
+  selected = null; animating = false; running = true;
   upd();
   makeBoard();
   draw();
@@ -196,7 +208,8 @@ function start() {
   }, 1000);
 }
 
-document.getElementById('restart').addEventListener('click', function() {
+document.getElementById('restart').addEventListener('click', function(e) {
+  e.stopPropagation();
   document.getElementById('game-over').style.display = 'none';
   start();
 });

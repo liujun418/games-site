@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://playfreegames.fun/sitemap.xml',
+    sitemap: 'https://game.toolboxonline.club/sitemap.xml',
   };
 }

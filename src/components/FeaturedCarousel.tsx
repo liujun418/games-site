@@ -5,12 +5,14 @@ import Link from 'next/link';
 import Image from 'next/image';
 import { ChevronLeft, ChevronRight, Play } from 'lucide-react';
 import type { Game } from '@/types/game';
+import { t } from '@/i18n';
 
 interface FeaturedCarouselProps {
   games: Game[];
+  lang: string;
 }
 
-export function FeaturedCarousel({ games }: FeaturedCarouselProps) {
+export function FeaturedCarousel({ games, lang }: FeaturedCarouselProps) {
   const [index, setIndex] = useState(0);
   const featured = games.filter(g => g.featured).slice(0, 5);
 
@@ -32,11 +34,11 @@ export function FeaturedCarousel({ games }: FeaturedCarouselProps) {
         <div className="absolute inset-0 bg-gradient-to-r from-gray-900/90 via-gray-900/60 to-transparent" />
         <div className="absolute inset-0 flex items-center">
           <div className="px-8 md:px-12 max-w-lg">
-            <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">Featured</span>
+            <span className="bg-yellow-400 text-gray-900 text-xs font-bold px-3 py-1 rounded-full">{t(lang, 'featured')}</span>
             <h2 className="text-white text-2xl md:text-4xl font-bold mt-3">{current.title}</h2>
             <p className="text-gray-300 text-sm mt-2 line-clamp-2">{current.description}</p>
-            <Link href={`/game/${current.slug}`} className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-5 py-2.5 rounded-lg mt-4 transition">
-              <Play className="w-4 h-4" /> Play Now
+            <Link href={`/${lang}/game/${current.slug}`} className="inline-flex items-center gap-2 bg-yellow-400 hover:bg-yellow-500 text-gray-900 font-semibold px-5 py-2.5 rounded-lg mt-4 transition">
+              <Play className="w-4 h-4" /> {t(lang, 'playNow')}
             </Link>
           </div>
         </div>

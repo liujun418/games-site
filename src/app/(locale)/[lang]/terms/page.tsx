@@ -1,7 +1,16 @@
-export default function TermsPage() {
+import { t } from '@/i18n';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return { title: t(lang, 'termsTitle') };
+}
+
+export default async function TermsPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
   return (
     <div className="max-w-3xl mx-auto prose prose-invert">
-      <h1 className="text-3xl font-bold text-white mb-6">Terms of Service</h1>
+      <h1 className="text-3xl font-bold text-white mb-6">{t(lang, 'termsTitle')}</h1>
       <p className="text-gray-400 text-sm">Last updated: May 4, 2026</p>
 
       <h2 className="text-xl font-semibold text-white mt-8 mb-3">1. Acceptance of Terms</h2>
@@ -20,7 +29,7 @@ export default function TermsPage() {
       <p className="text-gray-300">We are not liable for any damages arising from your use of the website or games.</p>
 
       <h2 className="text-xl font-semibold text-white mt-8 mb-3">6. Contact</h2>
-      <p className="text-gray-300">Contact us at legal@playfreegames.fun</p>
+      <p className="text-gray-300">Contact us at jzerov@live.com</p>
     </div>
   );
 }

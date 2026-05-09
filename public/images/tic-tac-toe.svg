@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#f5f5dc"/>
+  <rect x="100" y="80" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <rect x="170" y="80" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <rect x="240" y="80" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <rect x="100" y="150" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <rect x="170" y="150" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <rect x="240" y="150" width="60" height="60" rx="4" fill="#fff" stroke="#333" stroke-width="2"/>
+  <text x="130" y="122" text-anchor="middle" font-size="28" fill="#ff6b9d" font-weight="bold">X</text>
+  <text x="200" y="122" text-anchor="middle" font-size="28" fill="#4ecdc4" font-weight="bold">O</text>
+  <text x="270" y="192" text-anchor="middle" font-size="28" fill="#ff6b9d" font-weight="bold">X</text>
+  <text x="200" y="218" text-anchor="middle" fill="#333" font-family="Arial" font-size="14" font-weight="bold">Tic Tac Toe</text>
+</svg>

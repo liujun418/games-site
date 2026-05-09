@@ -1,0 +1,192 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dino Runner - Play Free Online</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; color: #eee; }
+h1 { color: #4ecdc4; margin-bottom: 10px; }
+#score { font-size: 1.2rem; margin-bottom: 10px; }
+canvas { background: #f7f7f7; border: 2px solid #4ecdc4; border-radius: 8px; display: block; }
+#start-screen { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
+#start-screen h2 { color: #4ecdc4; font-size: 2rem; margin-bottom: 10px; }
+#start-screen p { color: #aaa; margin-bottom: 20px; text-align: center; line-height: 1.6; }
+#start-btn { background: #4ecdc4; color: #000; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; }
+#start-btn:hover { background: #3ab5a5; }
+#game-over { display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
+#game-over h2 { color: #ff4444; font-size: 2rem; }
+#restart { background: #4ecdc4; color: #000; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; margin-top: 20px; }
+#restart:hover { background: #3ab5a5; }
+.ad-placeholder { background: #16213e; padding: 15px; margin: 15px 0; text-align: center; border-radius: 8px; color: #666; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<h1>Dino Runner</h1>
+<div id="score">Score: 0</div>
+<canvas id="game" width="600" height="200"></canvas>
+<div id="start-screen">
+  <h2>Dino Runner</h2>
+  <p>Press Space, tap, or click to jump.<br/>Avoid the cacti and birds!</p>
+  <button id="start-btn">Start Game</button>
+</div>
+<div id="game-over">
+  <h2>Game Over!</h2>
+  <p id="final-score"></p>
+  <button id="restart">Play Again</button>
+</div>
+<div class="ad-placeholder"><p>Advertisement</p></div>
+<script>
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
+var W = canvas.width, H = canvas.height;
+var GROUND = 160, SPEED = 5, GRAVITY = 0.6, JUMP = -11;
+
+var dino, obstacles, score, best, speed, frame, running, gameTimer;
+
+function init() {
+  dino = { x: 50, y: GROUND, vy: 0, w: 30, h: 40, jumping: false };
+  obstacles = [];
+  score = 0;
+  best = parseInt(localStorage.getItem('dino-best') || '0');
+  speed = SPEED;
+  frame = 0;
+  running = false;
+  updateScore();
+  draw();
+  document.getElementById('start-screen').style.display = 'flex';
+  document.getElementById('game-over').style.display = 'none';
+}
+
+function startGame() {
+  if (running) return;
+  running = true;
+  document.getElementById('start-screen').style.display = 'none';
+  gameTimer = setInterval(update, 16);
+}
+
+function jump() {
+  if (!running || dino.jumping) return;
+  dino.vy = JUMP;
+  dino.jumping = true;
+}
+
+function update() {
+  frame++;
+  speed = SPEED + Math.floor(score / 100) * 0.5;
+
+  // Dino physics
+  dino.vy += GRAVITY;
+  dino.y += dino.vy;
+  if (dino.y >= GROUND) { dino.y = GROUND; dino.vy = 0; dino.jumping = false; }
+
+  // Spawn obstacles
+  if (frame % Math.max(60, 120 - Math.floor(score / 50)) === 0) {
+    var type = Math.random() < 0.25 && score > 50 ? 'bird' : 'cactus';
+    var obs = { x: W, type: type };
+    if (type === 'cactus') {
+      obs.w = 15 + Math.random() * 15;
+      obs.h = 25 + Math.random() * 15;
+      obs.y = GROUND + 40 - obs.h;
+    } else {
+      obs.w = 30;
+      obs.h = 20;
+      obs.y = GROUND - 10 - Math.random() * 40;
+    }
+    obstacles.push(obs);
+  }
+
+  // Move obstacles
+  for (var i = obstacles.length - 1; i >= 0; i--) {
+    obstacles[i].x -= speed;
+    if (obstacles[i].x + obstacles[i].w < 0) obstacles.splice(i, 1);
+  }
+
+  // Collision
+  for (var j = 0; j < obstacles.length; j++) {
+    var o = obstacles[j];
+    if (dino.x + dino.w - 5 > o.x && dino.x + 5 < o.x + o.w &&
+        dino.y + dino.h - 5 > o.y && dino.y + 5 < o.y + o.h) {
+      clearInterval(gameTimer);
+      running = false;
+      if (score > best) { best = score; localStorage.setItem('dino-best', best); }
+      document.getElementById('final-score').textContent = 'Score: ' + score + ' | Best: ' + best;
+      document.getElementById('game-over').style.display = 'flex';
+      return;
+    }
+  }
+
+  score++;
+  updateScore();
+  draw();
+}
+
+function draw() {
+  ctx.fillStyle = '#f7f7f7';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground
+  ctx.fillStyle = '#555';
+  ctx.fillRect(0, GROUND + 40, W, 2);
+
+  // Dino
+  ctx.fillStyle = '#333';
+  ctx.fillRect(dino.x, dino.y, dino.w, dino.h);
+  ctx.fillStyle = '#fff';
+  ctx.fillRect(dino.x + 20, dino.y + 8, 6, 6);
+  ctx.fillStyle = '#000';
+  ctx.fillRect(dino.x + 23, dino.y + 10, 3, 3);
+  // Legs animation
+  ctx.fillStyle = '#333';
+  if (running && !dino.jumping) {
+    var legOff = Math.floor(frame / 5) % 2;
+    ctx.fillRect(dino.x + 5, dino.y + dino.h, 6, 5 + legOff * 3);
+    ctx.fillRect(dino.x + 18, dino.y + dino.h, 6, 5 + (1 - legOff) * 3);
+  } else {
+    ctx.fillRect(dino.x + 5, dino.y + dino.h, 6, 5);
+    ctx.fillRect(dino.x + 18, dino.y + dino.h, 6, 5);
+  }
+
+  // Obstacles
+  for (var i = 0; i < obstacles.length; i++) {
+    var o = obstacles[i];
+    if (o.type === 'cactus') {
+      ctx.fillStyle = '#2ecc71';
+      ctx.fillRect(o.x, o.y, o.w, o.h);
+      ctx.fillRect(o.x - 5, o.y + 5, 5, 10);
+      ctx.fillRect(o.x + o.w, o.y + 8, 5, 8);
+    } else {
+      ctx.fillStyle = '#e74c3c';
+      ctx.fillRect(o.x, o.y, o.w, o.h);
+      // Wings
+      ctx.fillStyle = '#c0392b';
+      var wingOff = Math.floor(frame / 8) % 2;
+      ctx.fillRect(o.x + 5, o.y - 8 - wingOff * 5, 8, 8);
+      ctx.fillRect(o.x + 17, o.y - 8 - wingOff * 5, 8, 8);
+    }
+  }
+}
+
+function updateScore() {
+  document.getElementById('score').textContent = 'Score: ' + score;
+}
+
+function handleInput(e) {
+  if (e.type === 'keydown' && e.code !== 'Space' && e.code !== 'ArrowUp') return;
+  e.preventDefault();
+  if (!running) startGame();
+  else jump();
+}
+
+document.addEventListener('keydown', handleInput);
+canvas.addEventListener('click', handleInput);
+canvas.addEventListener('touchstart', function(e) { e.preventDefault(); handleInput(e); }, { passive: false });
+
+document.getElementById('start-btn').addEventListener('click', function(e) { e.stopPropagation(); startGame(); });
+document.getElementById('restart').addEventListener('click', function(e) { e.stopPropagation(); init(); startGame(); });
+
+init();
+</script>
+</body>
+</html>

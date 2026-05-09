@@ -5,6 +5,11 @@ body {
   color: #ededed;
 }
 
+/* Arabic font fallback */
+.font-arabic {
+  font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Noto Sans Arabic', sans-serif;
+}
+
 /* AdSense ad container styles */
 .adsbygoogle {
   min-height: 90px;

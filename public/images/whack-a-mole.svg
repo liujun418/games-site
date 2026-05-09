@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#16213e"/>
+  <circle cx="100" cy="80" r="30" fill="#555"/>
+  <circle cx="200" cy="80" r="30" fill="#555"/>
+  <circle cx="300" cy="80" r="30" fill="#555"/>
+  <circle cx="100" cy="160" r="30" fill="#555"/>
+  <circle cx="200" cy="160" r="30" fill="#555"/>
+  <circle cx="300" cy="160" r="30" fill="#555"/>
+  <text x="100" y="90" text-anchor="middle" font-size="24">🐹</text>
+  <text x="200" y="170" text-anchor="middle" font-size="24">🐹</text>
+  <text x="300" y="90" text-anchor="middle" font-size="24">🐹</text>
+  <text x="200" y="215" text-anchor="middle" fill="#ffd700" font-family="Arial" font-size="14" font-weight="bold">Whack-a-Mole</text>
+</svg>

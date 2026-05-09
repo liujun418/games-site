@@ -1,7 +1,16 @@
-export default function PrivacyPage() {
+import { t } from '@/i18n';
+import type { Metadata } from 'next';
+
+export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
+  const { lang } = await params;
+  return { title: t(lang, 'privacyTitle') };
+}
+
+export default async function PrivacyPage({ params }: { params: Promise<{ lang: string }> }) {
+  const { lang } = await params;
   return (
     <div className="max-w-3xl mx-auto prose prose-invert">
-      <h1 className="text-3xl font-bold text-white mb-6">Privacy Policy</h1>
+      <h1 className="text-3xl font-bold text-white mb-6">{t(lang, 'privacyTitle')}</h1>
       <p className="text-gray-400 text-sm">Last updated: May 4, 2026</p>
 
       <h2 className="text-xl font-semibold text-white mt-8 mb-3">1. Introduction</h2>
@@ -20,7 +29,7 @@ export default function PrivacyPage() {
       <p className="text-gray-300">We use cookies to improve your experience and for advertising purposes. You can control cookies through your browser settings.</p>
 
       <h2 className="text-xl font-semibold text-white mt-8 mb-3">6. Contact</h2>
-      <p className="text-gray-300">For questions about this policy, contact us at privacy@playfreegames.fun</p>
+      <p className="text-gray-300">For questions about this policy, contact us at jzerov@live.com</p>
     </div>
   );
 }

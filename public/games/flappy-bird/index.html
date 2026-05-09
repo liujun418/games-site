@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Flappy Bird - Play Free Online</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; color: #eee; }
+h1 { color: #ffd700; margin-bottom: 10px; }
+#score { font-size: 1.2rem; margin-bottom: 10px; color: #4ecdc4; }
+canvas { background: #87CEEB; border: 2px solid #ffd700; border-radius: 8px; display: block; }
+#start-screen, #game-over { position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; flex-direction: column; }
+#start-screen h2 { color: #ffd700; font-size: 2rem; margin-bottom: 10px; }
+#start-screen p { color: #aaa; margin-bottom: 20px; text-align: center; line-height: 1.6; }
+#game-over { display: none; }
+#game-over h2 { color: #ff4444; font-size: 2rem; }
+#final-score { color: #ffd700; font-size: 1.2rem; margin-bottom: 16px; }
+.btn { background: #ffd700; color: #000; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; font-weight: bold; }
+.btn:hover { background: #ffaa00; }
+.ad-placeholder { background: #16213e; padding: 15px; margin: 15px 0; text-align: center; border-radius: 8px; color: #666; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<h1>Flappy Bird</h1>
+<div id="score">Best: 0</div>
+<canvas id="game" width="400" height="600"></canvas>
+<div id="start-screen">
+  <h2>Flappy Bird</h2>
+  <p>Tap, click, or press Space to flap.<br/>Avoid the pipes!</p>
+  <button class="btn" id="start-btn">Start Game</button>
+</div>
+<div id="game-over">
+  <h2>Game Over!</h2>
+  <div id="final-score"></div>
+  <button class="btn" id="restart">Play Again</button>
+</div>
+<div class="ad-placeholder"><p>Advertisement</p></div>
+<script>
+var canvas = document.getElementById('game');
+var ctx = canvas.getContext('2d');
+var W = canvas.width, H = canvas.height;
+var GRAVITY = 0.4, FLAP = -7, PIPE_W = 52, PIPE_GAP = 140, PIPE_SPEED = 2.5, PIPE_INTERVAL = 90;
+
+var bird, pipes, frame, score, best, running, gameOver;
+
+function init() {
+  bird = { x: 80, y: H / 2, vy: 0, r: 14 };
+  pipes = [];
+  frame = 0;
+  score = 0;
+  gameOver = false;
+  running = false;
+  best = parseInt(localStorage.getItem('flappy-best') || '0');
+  updScore();
+  draw();
+  document.getElementById('start-screen').style.display = 'flex';
+  document.getElementById('game-over').style.display = 'none';
+}
+
+function startGame() {
+  if (running) return;
+  running = true;
+  document.getElementById('start-screen').style.display = 'none';
+  loop();
+}
+
+function flap() {
+  if (!running) return;
+  bird.vy = FLAP;
+}
+
+function spawnPipe() {
+  var minTop = 60, maxTop = H - PIPE_GAP - 60;
+  var topH = minTop + Math.random() * (maxTop - minTop);
+  pipes.push({ x: W, top: topH, scored: false });
+}
+
+function loop() {
+  if (!running) return;
+  frame++;
+  if (frame % PIPE_INTERVAL === 0) spawnPipe();
+
+  bird.vy += GRAVITY;
+  bird.y += bird.vy;
+
+  for (var i = pipes.length - 1; i >= 0; i--) {
+    pipes[i].x -= PIPE_SPEED;
+    if (!pipes[i].scored && pipes[i].x + PIPE_W < bird.x) {
+      pipes[i].scored = true;
+      score++;
+      updScore();
+    }
+    if (pipes[i].x + PIPE_W < -10) pipes.splice(i, 1);
+  }
+
+  // Collision
+  if (bird.y - bird.r < 0 || bird.y + bird.r > H) { die(); return; }
+  for (var j = 0; j < pipes.length; j++) {
+    var p = pipes[j];
+    if (bird.x + bird.r > p.x && bird.x - bird.r < p.x + PIPE_W) {
+      if (bird.y - bird.r < p.top || bird.y + bird.r > p.top + PIPE_GAP) { die(); return; }
+    }
+  }
+
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function die() {
+  running = false;
+  if (score > best) {
+    best = score;
+    localStorage.setItem('flappy-best', best);
+    updScore();
+  }
+  document.getElementById('final-score').textContent = 'Score: ' + score + ' | Best: ' + best;
+  document.getElementById('game-over').style.display = 'flex';
+}
+
+function draw() {
+  ctx.fillStyle = '#87CEEB';
+  ctx.fillRect(0, 0, W, H);
+
+  // Ground
+  ctx.fillStyle = '#8B4513';
+  ctx.fillRect(0, H - 20, W, 20);
+  ctx.fillStyle = '#228B22';
+  ctx.fillRect(0, H - 24, W, 8);
+
+  // Pipes
+  for (var i = 0; i < pipes.length; i++) {
+    var p = pipes[i];
+    ctx.fillStyle = '#2ecc71';
+    ctx.fillRect(p.x, 0, PIPE_W, p.top);
+    ctx.fillRect(p.x, p.top + PIPE_GAP, PIPE_W, H - p.top - PIPE_GAP);
+    ctx.fillStyle = '#27ae60';
+    ctx.fillRect(p.x - 3, p.top - 20, PIPE_W + 6, 20);
+    ctx.fillRect(p.x - 3, p.top + PIPE_GAP, PIPE_W + 6, 20);
+  }
+
+  // Bird
+  ctx.fillStyle = '#ffd700';
+  ctx.beginPath();
+  ctx.arc(bird.x, bird.y, bird.r, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#ff8c00';
+  ctx.beginPath();
+  ctx.arc(bird.x + 6, bird.y - 2, 4, 0, Math.PI * 2);
+  ctx.fill();
+  ctx.fillStyle = '#000';
+  ctx.beginPath();
+  ctx.arc(bird.x + 8, bird.y - 4, 2, 0, Math.PI * 2);
+  ctx.fill();
+
+  // Score display
+  ctx.fillStyle = '#fff';
+  ctx.font = 'bold 32px Arial';
+  ctx.textAlign = 'center';
+  ctx.strokeStyle = '#000';
+  ctx.lineWidth = 3;
+  ctx.strokeText(score, W / 2, 50);
+  ctx.fillText(score, W / 2, 50);
+}
+
+function updScore() {
+  document.getElementById('score').textContent = 'Best: ' + best;
+}
+
+function handleInput(e) {
+  if (e.type === 'keydown' && e.code !== 'Space') return;
+  e.preventDefault();
+  if (!running && !gameOver) startGame();
+  else if (running) flap();
+}
+
+canvas.addEventListener('click', handleInput);
+document.addEventListener('keydown', handleInput);
+document.addEventListener('touchstart', function(e) {
+  e.preventDefault();
+  handleInput(e);
+}, { passive: false });
+
+document.getElementById('start-btn').addEventListener('click', function(e) {
+  e.stopPropagation();
+  startGame();
+});
+document.getElementById('restart').addEventListener('click', function(e) {
+  e.stopPropagation();
+  init();
+  startGame();
+});
+
+init();
+</script>
+</body>
+</html>

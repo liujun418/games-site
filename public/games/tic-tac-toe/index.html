@@ -1,0 +1,160 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Tic Tac Toe - Play Free Online</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1a1a2e; display: flex; flex-direction: column; align-items: center; justify-content: center; min-height: 100vh; font-family: Arial, sans-serif; color: #eee; }
+h1 { color: #a855f7; margin-bottom: 10px; }
+#info { font-size: 1.2rem; margin-bottom: 15px; min-height: 1.5em; }
+#board { display: grid; grid-template-columns: repeat(3, 100px); gap: 4px; }
+.cell { width: 100px; height: 100px; background: #16213e; border: 2px solid #333; display: flex; align-items: center; justify-content: center; font-size: 2.5rem; font-weight: bold; cursor: pointer; border-radius: 8px; }
+.cell:hover { background: #1e2d50; }
+.cell.x { color: #4ecdc4; }
+.cell.o { color: #ff6b9d; }
+.cell.win { background: #2ecc71; color: #fff; }
+#stats { display: flex; gap: 30px; margin-top: 15px; font-size: 0.9rem; color: #888; }
+#restart { background: #a855f7; color: #fff; border: none; padding: 12px 30px; font-size: 1rem; border-radius: 8px; cursor: pointer; margin-top: 15px; }
+#restart:hover { background: #7c3aed; }
+.ad-placeholder { background: #16213e; padding: 15px; margin: 15px 0; text-align: center; border-radius: 8px; color: #666; font-size: 0.8rem; }
+</style>
+</head>
+<body>
+<h1>Tic Tac Toe</h1>
+<div id="info">Your turn (X)</div>
+<div id="board"></div>
+<div id="stats">
+  <span>Wins: <span id="wins">0</span></span>
+  <span>Draws: <span id="draws">0</span></span>
+  <span>Losses: <span id="losses">0</span></span>
+</div>
+<button id="restart">New Game</button>
+<div class="ad-placeholder"><p>Advertisement</p></div>
+<script>
+var board, turn, over, wins, draws, losses;
+wins = draws = losses = 0;
+
+function init() {
+  board = Array(9).fill(null);
+  turn = 'X';
+  over = false;
+  render();
+  updInfo();
+}
+
+function render() {
+  var el = document.getElementById('board');
+  el.innerHTML = '';
+  for (var i = 0; i < 9; i++) {
+    var cell = document.createElement('div');
+    cell.className = 'cell';
+    if (board[i]) {
+      cell.textContent = board[i];
+      cell.classList.add(board[i].toLowerCase());
+    }
+    cell.addEventListener('click', (function(idx) { return function() { play(idx); }; })(i));
+    el.appendChild(cell);
+  }
+}
+
+function play(idx) {
+  if (over || board[idx] || turn !== 'X') return;
+  board[idx] = 'X';
+  if (checkEnd()) return;
+  turn = 'O';
+  updInfo();
+  render();
+  setTimeout(aiMove, 300);
+}
+
+function aiMove() {
+  var move = bestMove();
+  if (move === null) return;
+  board[move] = 'O';
+  if (checkEnd()) return;
+  turn = 'X';
+  updInfo();
+  render();
+}
+
+function bestMove() {
+  // Try to win
+  for (var i = 0; i < 9; i++) {
+    if (!board[i]) { board[i] = 'O'; if (winning('O')) { board[i] = null; return i; } board[i] = null; }
+  }
+  // Block player
+  for (var i = 0; i < 9; i++) {
+    if (!board[i]) { board[i] = 'X'; if (winning('X')) { board[i] = null; return i; } board[i] = null; }
+  }
+  // Center
+  if (!board[4]) return 4;
+  // Corners
+  var corners = [0,2,6,8].filter(function(i) { return !board[i]; });
+  if (corners.length) return corners[Math.floor(Math.random() * corners.length)];
+  // Any
+  var empty = [];
+  for (var i = 0; i < 9; i++) if (!board[i]) empty.push(i);
+  return empty.length ? empty[Math.floor(Math.random() * empty.length)] : null;
+}
+
+function winning(p) {
+  var lines = [[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+  for (var i = 0; i < lines.length; i++) {
+    if (board[lines[i][0]] === p && board[lines[i][1]] === p && board[lines[i][2]] === p) return lines[i];
+  }
+  return null;
+}
+
+function checkEnd() {
+  var w = winning('X');
+  if (w) {
+    over = true;
+    wins++;
+    updStats();
+    updInfo('You win!');
+    highlight(w);
+    return true;
+  }
+  w = winning('O');
+  if (w) {
+    over = true;
+    losses++;
+    updStats();
+    updInfo('AI wins!');
+    highlight(w);
+    return true;
+  }
+  if (board.every(function(c) { return c; })) {
+    over = true;
+    draws++;
+    updStats();
+    updInfo("It's a draw!");
+    return true;
+  }
+  return false;
+}
+
+function highlight(cells) {
+  var el = document.getElementById('board');
+  cells.forEach(function(i) {
+    el.children[i].classList.add('win');
+  });
+}
+
+function updInfo(msg) {
+  document.getElementById('info').textContent = msg || (turn === 'X' ? 'Your turn (X)' : 'AI thinking...');
+}
+
+function updStats() {
+  document.getElementById('wins').textContent = wins;
+  document.getElementById('draws').textContent = draws;
+  document.getElementById('losses').textContent = losses;
+}
+
+document.getElementById('restart').addEventListener('click', init);
+init();
+</script>
+</body>
+</html>
