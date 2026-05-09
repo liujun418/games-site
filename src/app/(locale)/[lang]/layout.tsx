@@ -35,6 +35,13 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       description: t(lang, 'seoDesc'),
       type: "website",
       locale: localeMap[lang] || 'en_US',
+      images: [{ url: '/images/og-site.svg', width: 1200, height: 630, alt: 'PlayFreeGames' }],
+    },
+    twitter: {
+      card: 'summary_large_image',
+      title: `${t(lang, 'siteName')} - ${t(lang, 'tagline')}`,
+      description: t(lang, 'seoDesc'),
+      images: ['/images/og-site.svg'],
     },
   };
 }
