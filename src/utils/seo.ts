@@ -17,7 +17,7 @@ export function gameJsonLd(game: { title: string; description: string; thumbnail
     name: game.title,
     description: game.description,
     thumbnailUrl: game.thumbnail,
-    url: `https://game.toolboxonline.club/game/${game.slug}`,
+    url: `https://game.dungeonpath.com/game/${game.slug}`,
     genre: 'Browser Game',
     gamePlatform: 'Web Browser',
     offers: {
@@ -56,7 +56,7 @@ export function generateItemListJsonLd(games: { title: string; description: stri
         '@type': 'VideoGame',
         name: game.title,
         description: game.description,
-        url: `https://game.toolboxonline.club/game/${game.slug}`,
+        url: `https://game.dungeonpath.com/game/${game.slug}`,
         thumbnailUrl: game.thumbnail,
       },
     })),

@@ -6,6 +6,6 @@ export default function robots(): MetadataRoute.Robots {
       userAgent: '*',
       allow: '/',
     },
-    sitemap: 'https://game.toolboxonline.club/sitemap.xml',
+    sitemap: 'https://game.dungeonpath.com/sitemap.xml',
   };
 }

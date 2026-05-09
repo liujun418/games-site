@@ -14,7 +14,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   const games = getGamesByCategory(slug);
   if (games.length === 0) return { title: 'Category Not Found' };
   const catLabel = getLocalizedCategory(lang, slug);
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.toolboxonline.club';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.dungeonpath.com';
 
   return {
     title: `${catLabel} ${t(lang, 'categoryGames')} - ${t(lang, 'playOnline')} | ${t(lang, 'siteName')}`,
@@ -37,7 +37,7 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
 
   const localizedGames = games.map(g => getLocaleGame(lang, g));
   const catLabel = getLocalizedCategory(lang, slug);
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.toolboxonline.club';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.dungeonpath.com';
 
   return (
     <>

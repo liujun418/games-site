@@ -2,7 +2,7 @@ import { selfGames, getCategories } from '@/data';
 import type { MetadataRoute } from 'next';
 
 const LOCALES = ['en', 'es', 'ar'] as const;
-const baseUrl = 'https://game.toolboxonline.club';
+const baseUrl = 'https://game.dungeonpath.com';
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const games = selfGames;

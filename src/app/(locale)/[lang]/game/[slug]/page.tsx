@@ -21,7 +21,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   if (!game) return { title: 'Game Not Found' };
   const localized = getLocaleGame(lang, game);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.toolboxonline.club';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.dungeonpath.com';
   return {
     title: `${localized.title} - Play Free Online | PlayFreeGames`,
     description: localized.description,
@@ -60,7 +60,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
     .filter(g => g.slug !== slug && (g.category === localized.category || g.tags.some(tag => localized.tags.includes(tag))))
     .slice(0, 6);
 
-  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.toolboxonline.club';
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.dungeonpath.com';
   const gameUrl = `${baseUrl}/${lang}/game/${slug}`;
 
   return (
