@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Hangman - Free Online Word Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1d1e20; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-family: 'Helvetica Neue', Arial, sans-serif; padding: 10px; }
+h1 { font-size: 24px; margin: 10px 0; background: linear-gradient(135deg, #a855f7, #06b6d4); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+#canvas { margin: 10px auto; }
+#word { font-size: 28px; letter-spacing: 12px; margin: 15px 0; color: #e2e8f0; font-weight: bold; min-height: 40px; }
+#hint { color: #94a3b8; font-size: 14px; margin-bottom: 10px; }
+#status { font-size: 18px; margin: 10px 0; min-height: 28px; font-weight: bold; }
+.win { color: #22c55e; }
+.lose { color: #ef4444; }
+#keyboard { max-width: 420px; display: flex; flex-direction: column; gap: 6px; margin: 10px auto; }
+.kbd-row { display: flex; justify-content: center; gap: 5px; }
+.key { min-width: 32px; height: 44px; background: #555; border: none; border-radius: 6px; color: white; font-size: 16px; font-weight: bold; cursor: pointer; transition: all 0.2s; }
+.key:hover { background: #666; }
+.key:disabled { opacity: 0.3; cursor: not-allowed; }
+.key.correct { background: #22c55e; }
+.key.wrong { background: #ef4444; }
+#new-game { margin-top: 12px; padding: 10px 24px; background: linear-gradient(135deg, #a855f7, #06b6d4); border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; }
+#new-game:hover { opacity: 0.9; }
+#category { color: #a855f7; font-size: 14px; margin: 5px 0; }
+</style>
+</head>
+<body>
+<h1>HANGMAN</h1>
+<canvas id="canvas" width="200" height="200"></canvas>
+<div id="category"></div>
+<div id="word"></div>
+<div id="hint"></div>
+<div id="status"></div>
+<div id="keyboard"></div>
+<button id="new-game" onclick="newGame()">New Game</button>
+<script>
+const WORDS = [
+  { word: 'PYTHON', category: 'Programming', hint: 'A popular programming language named after a comedy group' },
+  { word: 'GALAXY', category: 'Space', hint: 'A massive system of stars, dust, and dark matter' },
+  { word: 'DRAGON', category: 'Mythology', hint: 'A legendary fire-breathing creature' },
+  { word: 'PIRATE', category: 'History', hint: 'A seafaring raider who robs ships' },
+  { word: 'CASTLE', category: 'Architecture', hint: 'A fortified medieval residence' },
+  { word: 'PUZZLE', category: 'Games', hint: 'A problem designed to test ingenuity' },
+  { word: 'ROCKET', category: 'Space', hint: 'A vehicle used to travel into space' },
+  { word: 'OCEAN', category: 'Nature', hint: 'A vast body of salt water' },
+  { word: 'FOREST', category: 'Nature', hint: 'A large area covered chiefly with trees' },
+  { word: 'TIGER', category: 'Animals', hint: 'A large wild cat with stripes' },
+  { word: 'DIAMOND', category: 'Minerals', hint: 'A precious gemstone made of carbon' },
+  { word: 'VOLCANO', category: 'Nature', hint: 'A mountain that erupts with lava' },
+  { word: 'ZOMBIE', category: 'Horror', hint: 'An undead creature in popular culture' },
+  { word: 'NINJA', category: 'History', hint: 'A Japanese stealth warrior' },
+  { word: 'PHARAOH', category: 'History', hint: 'An ancient Egyptian ruler' },
+  { word: 'WIZARD', category: 'Fantasy', hint: 'A person who practices magic' },
+  { word: 'PLANET', category: 'Space', hint: 'A celestial body orbiting a star' },
+  { word: 'CASTLE', category: 'Medieval', hint: 'A fortified building from the Middle Ages' },
+  { word: 'JUNGLE', category: 'Nature', hint: 'A dense tropical forest' },
+  { word: 'FALCON', category: 'Animals', hint: 'A fast bird of prey' },
+  { word: 'BRIDGE', category: 'Architecture', hint: 'A structure built to span a physical obstacle' },
+  { word: 'KNIGHT', category: 'Medieval', hint: 'A mounted warrior in armor' },
+  { word: 'SPHINX', category: 'Mythology', hint: 'A mythical creature with a lion body and human head' },
+  { word: 'TEMPLE', category: 'Architecture', hint: 'A building devoted to worship' },
+  { word: 'DOLPHIN', category: 'Animals', hint: 'An intelligent marine mammal' },
+];
+let chosen, guessed, wrongCount, maxWrong, gameActive;
+const canvas = document.getElementById('canvas');
+const ctx = canvas.getContext('2d');
+const wordEl = document.getElementById('word');
+const hintEl = document.getElementById('hint');
+const statusEl = document.getElementById('status');
+const categoryEl = document.getElementById('category');
+const keyboard = document.getElementById('keyboard');
+const LAYOUT = ["QWERTYUIOP","ASDFGHJKL","ZXCVBNM"];
+function newGame() {
+  const entry = WORDS[Math.floor(Math.random() * WORDS.length)];
+  chosen = entry.word;
+  guessed = new Set();
+  wrongCount = 0;
+  maxWrong = 6;
+  gameActive = true;
+  statusEl.textContent = '';
+  statusEl.className = '';
+  categoryEl.textContent = 'Category: ' + entry.category;
+  hintEl.textContent = entry.hint;
+  drawGallows();
+  renderWord();
+  renderKeyboard();
+}
+function drawGallows() {
+  ctx.clearRect(0, 0, 200, 200);
+  ctx.strokeStyle = '#e2e8f0';
+  ctx.lineWidth = 3;
+  // Base
+  ctx.beginPath(); ctx.moveTo(20, 180); ctx.lineTo(180, 180); ctx.stroke();
+  // Pole
+  ctx.beginPath(); ctx.moveTo(60, 180); ctx.lineTo(60, 20); ctx.lineTo(140, 20); ctx.lineTo(140, 35); ctx.stroke();
+  // Rope
+  ctx.beginPath(); ctx.moveTo(140, 35); ctx.lineTo(140, 50); ctx.stroke();
+  if (wrongCount >= 1) { // Head
+    ctx.beginPath(); ctx.arc(140, 65, 15, 0, Math.PI * 2); ctx.stroke();
+  }
+  if (wrongCount >= 2) { // Body
+    ctx.beginPath(); ctx.moveTo(140, 80); ctx.lineTo(140, 120); ctx.stroke();
+  }
+  if (wrongCount >= 3) { // Left arm
+    ctx.beginPath(); ctx.moveTo(140, 90); ctx.lineTo(120, 110); ctx.stroke();
+  }
+  if (wrongCount >= 4) { // Right arm
+    ctx.beginPath(); ctx.moveTo(140, 90); ctx.lineTo(160, 110); ctx.stroke();
+  }
+  if (wrongCount >= 5) { // Left leg
+    ctx.beginPath(); ctx.moveTo(140, 120); ctx.lineTo(120, 150); ctx.stroke();
+  }
+  if (wrongCount >= 6) { // Right leg + face
+    ctx.beginPath(); ctx.moveTo(140, 120); ctx.lineTo(160, 150); ctx.stroke();
+    // X eyes
+    ctx.lineWidth = 2;
+    ctx.beginPath(); ctx.moveTo(134, 60); ctx.lineTo(138, 64); ctx.moveTo(138, 60); ctx.lineTo(134, 64); ctx.stroke();
+    ctx.beginPath(); ctx.moveTo(142, 60); ctx.lineTo(146, 64); ctx.moveTo(146, 60); ctx.lineTo(142, 64); ctx.stroke();
+  }
+  ctx.lineWidth = 3;
+}
+function renderWord() {
+  const display = chosen.split('').map(l => guessed.has(l) ? l : '_').join(' ');
+  wordEl.textContent = display;
+  if (!display.includes('_')) {
+    gameActive = false;
+    statusEl.textContent = 'You Win!';
+    statusEl.className = 'win';
+    disableAllKeys();
+  }
+}
+function renderKeyboard() {
+  keyboard.innerHTML = '';
+  for (const row of LAYOUT) {
+    const rowEl = document.createElement('div');
+    rowEl.className = 'kbd-row';
+    for (const ch of row) {
+      const key = document.createElement('button');
+      key.className = 'key';
+      key.textContent = ch;
+      key.dataset.key = ch;
+      if (guessed.has(ch)) {
+        key.disabled = true;
+        if (chosen.includes(ch)) key.classList.add('correct');
+        else key.classList.add('wrong');
+      }
+      key.addEventListener('click', () => guess(ch));
+      rowEl.appendChild(key);
+    }
+    keyboard.appendChild(rowEl);
+  }
+}
+function disableAllKeys() {
+  keyboard.querySelectorAll('.key').forEach(k => k.disabled = true);
+}
+function guess(letter) {
+  if (!gameActive || guessed.has(letter)) return;
+  guessed.add(letter);
+  if (!chosen.includes(letter)) {
+    wrongCount++;
+    drawGallows();
+    if (wrongCount >= maxWrong) {
+      gameActive = false;
+      statusEl.textContent = 'Game Over! The word was: ' + chosen;
+      statusEl.className = 'lose';
+      wordEl.textContent = chosen.split('').join(' ');
+      disableAllKeys();
+    }
+  }
+  renderWord();
+  renderKeyboard();
+}
+document.addEventListener('keydown', (e) => {
+  if (!gameActive) return;
+  const key = e.key.toUpperCase();
+  if (/^[A-Z]$/.test(key)) guess(key);
+});
+newGame();
+</script>
+</body>
+</html>

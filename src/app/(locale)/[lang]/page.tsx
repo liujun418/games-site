@@ -10,12 +10,15 @@ import type { Metadata } from 'next';
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   return {
-    title: t(lang, 'siteName'),
+    title: `${t(lang, 'siteName')} - ${t(lang, 'tagline')}`,
     description: t(lang, 'seoDesc'),
+    keywords: ['free games', 'online games', 'browser games', 'HTML5 games', 'puzzle games', 'arcade games', 'wordle', 'stack tower'],
     openGraph: {
       title: `${t(lang, 'siteName')} - ${t(lang, 'tagline')}`,
       description: t(lang, 'seoDesc'),
       type: 'website',
+      locale: lang === 'en' ? 'en_US' : lang === 'es' ? 'es_ES' : 'ar_SA',
+      siteName: 'PlayFreeGames',
     },
   };
 }

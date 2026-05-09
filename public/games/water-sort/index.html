@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Water Sort Puzzle - Free Online Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1d1e20; display: flex; flex-direction: column; align-items: center; min-height: 100vh; font-family: 'Helvetica Neue', Arial, sans-serif; padding: 10px; }
+h1 { font-size: 24px; margin: 10px 0; background: linear-gradient(135deg, #a855f7, #06b6d4); -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent; }
+#game { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; margin: 15px auto; max-width: 500px; }
+.tube { width: 52px; height: 200px; border: 3px solid #555; border-top: none; border-radius: 0 0 12px 12px; display: flex; flex-direction: column-reverse; cursor: pointer; position: relative; overflow: hidden; transition: transform 0.2s, border-color 0.2s; background: rgba(255,255,255,0.03); }
+.tube:hover { border-color: #a855f7; }
+.tube.selected { border-color: #a855f7; transform: translateY(-10px); box-shadow: 0 8px 20px rgba(168,85,247,0.3); }
+.tube.complete { border-color: #22c55e; }
+.liquid { width: 100%; height: 25%; transition: height 0.3s; }
+#info { color: #94a3b8; font-size: 14px; margin: 8px 0; }
+#moves { color: #a855f7; font-size: 18px; font-weight: bold; }
+#new-game { padding: 10px 24px; background: linear-gradient(135deg, #a855f7, #06b6d4); border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; margin-top: 8px; }
+#new-game:hover { opacity: 0.9; }
+#win { display: none; color: #22c55e; font-size: 24px; font-weight: bold; margin: 10px 0; }
+</style>
+</head>
+<body>
+<h1>Water Sort</h1>
+<div id="info">Moves: <span id="moves">0</span></div>
+<div id="game"></div>
+<div id="win">You Win!</div>
+<button id="new-game" onclick="newGame()">New Puzzle</button>
+<script>
+const COLORS = ['#ef4444','#3b82f6','#22c55e','#eab308','#8b5cf6','#f97316','#ec4899','#06b6d4'];
+const TUBE_COUNT = 8;
+const TUBE_CAPACITY = 4;
+const EMPTY_TUBES = 2;
+let tubes, selected, moveCount;
+function newGame() {
+  moveCount = 0;
+  document.getElementById('moves').textContent = '0';
+  document.getElementById('win').style.display = 'none';
+  // Generate solvable puzzle
+  const colorCount = TUBE_COUNT - EMPTY_TUBES;
+  let water = [];
+  for (let i = 0; i < colorCount; i++) {
+    for (let j = 0; j < TUBE_CAPACITY; j++) water.push(i);
+  }
+  // Shuffle
+  for (let i = water.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [water[i], water[j]] = [water[j], water[i]];
+  }
+  tubes = [];
+  for (let i = 0; i < TUBE_COUNT; i++) {
+    tubes.push(water.slice(i * TUBE_CAPACITY, (i + 1) * TUBE_CAPACITY));
+  }
+  selected = null;
+  render();
+}
+function render() {
+  const game = document.getElementById('game');
+  game.innerHTML = '';
+  tubes.forEach((tube, idx) => {
+    const tubeEl = document.createElement('div');
+    tubeEl.className = 'tube' + (selected === idx ? ' selected' : '');
+    // Check if complete
+    if (tube.length === TUBE_CAPACITY && tube.every(c => c === tube[0])) {
+      tubeEl.classList.add('complete');
+    }
+    tube.forEach(colorIdx => {
+      const liquid = document.createElement('div');
+      liquid.className = 'liquid';
+      liquid.style.backgroundColor = COLORS[colorIdx];
+      tubeEl.appendChild(liquid);
+    });
+    tubeEl.addEventListener('click', () => onTubeClick(idx));
+    game.appendChild(tubeEl);
+  });
+  checkWin();
+}
+function onTubeClick(idx) {
+  if (selected === null) {
+    if (tubes[idx].length === 0) return;
+    selected = idx;
+  } else if (selected === idx) {
+    selected = null;
+  } else {
+    // Try to pour
+    const from = tubes[selected];
+    const to = tubes[idx];
+    if (to.length < TUBE_CAPACITY && from.length > 0) {
+      const colorToPour = from[from.length - 1];
+      if (to.length === 0 || to[to.length - 1] === colorToPour) {
+        // Pour
+        while (from.length > 0 && to.length < TUBE_CAPACITY && from[from.length - 1] === colorToPour) {
+          to.push(from.pop());
+        }
+        moveCount++;
+        document.getElementById('moves').textContent = moveCount;
+      }
+    }
+    selected = null;
+  }
+  render();
+}
+function checkWin() {
+  const win = tubes.every(tube => tube.length === 0 || (tube.length === TUBE_CAPACITY && tube.every(c => c === tube[0])));
+  if (win) {
+    document.getElementById('win').style.display = 'block';
+  }
+  return win;
+}
+newGame();
+</script>
+</body>
+</html>

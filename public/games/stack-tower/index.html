@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Stack Tower - Free Online Game</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body { background: #1d1e20; display: flex; flex-direction: column; align-items: center; justify-content: center; height: 100vh; overflow: hidden; font-family: 'Helvetica Neue', Arial, sans-serif; }
+canvas { display: block; max-width: 100%; max-height: 80vh; border-radius: 8px; }
+#score { font-size: 48px; font-weight: bold; color: #e2e8f0; text-align: center; margin-bottom: 10px; text-shadow: 0 0 20px rgba(168,85,247,0.5); }
+#info { color: #94a3b8; font-size: 14px; margin-top: 8px; text-align: center; }
+#restart { margin-top: 12px; padding: 10px 24px; background: linear-gradient(135deg, #a855f7, #06b6d4); border: none; border-radius: 8px; color: white; font-weight: bold; font-size: 14px; cursor: pointer; display: none; }
+#restart:hover { opacity: 0.9; }
+</style>
+</head>
+<body>
+<div id="score">0</div>
+<canvas id="game"></canvas>
+<div id="info">Click or press Space to stack blocks</div>
+<button id="restart" onclick="startGame()">Play Again</button>
+<script>
+const canvas = document.getElementById('game');
+const ctx = canvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const restartBtn = document.getElementById('restart');
+const W = 400, H = 600;
+canvas.width = W; canvas.height = H;
+const BLOCK_H = 30;
+const COLORS = ['#a855f7','#c084fc','#06b6d4','#22d3ee','#818cf8','#6366f1','#f472b6','#fb923c','#34d399','#22c55e','#eab308','#f43f5e'];
+let blocks, currentBlock, score, gameOver, direction, speed, cameraY;
+function startGame() {
+  blocks = [{ x: (W - 100) / 2, y: H - BLOCK_H, w: 100, color: COLORS[0] }];
+  score = 0; gameOver = false; direction = 1; speed = 3; cameraY = 0;
+  scoreEl.textContent = '0';
+  restartBtn.style.display = 'none';
+  spawnBlock();
+}
+function spawnBlock() {
+  const last = blocks[blocks.length - 1];
+  currentBlock = { x: -last.w, y: last.y - BLOCK_H, w: last.w, color: COLORS[score % COLORS.length] };
+  direction = 1; speed = 3 + score * 0.3;
+}
+function placeBlock() {
+  if (gameOver) return;
+  const last = blocks[blocks.length - 1];
+  const overlap = Math.min(currentBlock.x + currentBlock.w, last.x + last.w) - Math.max(currentBlock.x, last.x);
+  if (overlap <= 0) {
+    endGame(); return;
+  }
+  const newX = Math.max(currentBlock.x, last.x);
+  currentBlock.x = newX; currentBlock.w = overlap;
+  blocks.push({ ...currentBlock });
+  score++; scoreEl.textContent = score;
+  spawnBlock();
+}
+function endGame() {
+  gameOver = true;
+  restartBtn.style.display = 'inline-block';
+}
+function update() {
+  if (gameOver) return;
+  currentBlock.x += direction * speed;
+  if (currentBlock.x + currentBlock.w > W) direction = -1;
+  if (currentBlock.x < 0) direction = 1;
+  if (blocks.length > 15) {
+    cameraY += BLOCK_H;
+  }
+}
+function draw() {
+  ctx.clearRect(0, 0, W, H);
+  // Background gradient
+  const grad = ctx.createLinearGradient(0, 0, 0, H);
+  grad.addColorStop(0, '#0a0a1a');
+  grad.addColorStop(1, '#1d1e20');
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, W, H);
+  ctx.save();
+  ctx.translate(0, cameraY);
+  for (const b of blocks) {
+    ctx.fillStyle = b.color;
+    ctx.shadowColor = b.color;
+    ctx.shadowBlur = 8;
+    ctx.beginPath();
+    ctx.roundRect(b.x, b.y, b.w, BLOCK_H, 4);
+    ctx.fill();
+  }
+  ctx.shadowBlur = 0;
+  if (!gameOver && currentBlock) {
+    ctx.fillStyle = currentBlock.color;
+    ctx.shadowColor = currentBlock.color;
+    ctx.shadowBlur = 12;
+    ctx.beginPath();
+    ctx.roundRect(currentBlock.x, currentBlock.y, currentBlock.w, BLOCK_H, 4);
+    ctx.fill();
+    ctx.shadowBlur = 0;
+  }
+  ctx.restore();
+}
+function gameLoop() {
+  update(); draw();
+  requestAnimationFrame(gameLoop);
+}
+canvas.addEventListener('click', placeBlock);
+document.addEventListener('keydown', (e) => { if (e.code === 'Space') { e.preventDefault(); placeBlock(); }});
+startGame();
+gameLoop();
+</script>
+</body>
+</html>

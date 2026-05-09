@@ -19,6 +19,7 @@ export function Footer({ lang }: FooterProps) {
           <div className="flex items-center gap-4 text-sm">
             <Link href={`/${lang}/privacy`} className="text-[#94a3b8] hover:text-[#a855f7] transition">{t(lang, 'footer.privacy')}</Link>
             <Link href={`/${lang}/terms`} className="text-[#94a3b8] hover:text-[#a855f7] transition">{t(lang, 'footer.terms')}</Link>
+            <Link href={`/${lang}/contact`} className="text-[#94a3b8] hover:text-[#a855f7] transition">{t(lang, 'contactTitle')}</Link>
           </div>
         </div>
       </div>

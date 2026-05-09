@@ -29,6 +29,7 @@ export function Header({ lang }: HeaderProps) {
   };
 
   const categoryLinks = [
+    { href: `/${lang}/`, label: t(lang, 'home') },
     { href: `/${lang}/category/arcade`, label: t(lang, 'nav.arcade') },
     { href: `/${lang}/category/puzzle`, label: t(lang, 'nav.puzzle') },
     { href: `/${lang}/category/action`, label: t(lang, 'nav.action') },
@@ -110,7 +111,6 @@ export function Header({ lang }: HeaderProps) {
             {categoryLinks.map(link => (
               <Link key={link.href} href={link.href} className="text-[#94a3b8] hover:text-[#a855f7] transition text-sm">{link.label}</Link>
             ))}
-            <Link href={`/${lang}/favorites`} className="text-[#94a3b8] hover:text-[#a855f7] transition text-sm">{t(lang, 'favorites')}</Link>
           </nav>
         )}
       </div>

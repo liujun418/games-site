@@ -47,6 +47,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
       priority: 0.5,
     });
 
+    pages.push({
+      url: `${baseUrl}/${locale}/contact`,
+      lastModified: new Date(),
+      changeFrequency: 'monthly',
+      priority: 0.3,
+    });
+
     // Category pages per locale
     for (const cat of categories) {
       pages.push({

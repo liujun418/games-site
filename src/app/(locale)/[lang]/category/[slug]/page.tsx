@@ -19,6 +19,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${catLabel} ${t(lang, 'categoryGames')} - ${t(lang, 'playOnline')} | ${t(lang, 'siteName')}`,
     description: `${t(lang, 'bestFree')} ${catLabel.toLowerCase()} ${t(lang, 'categoryGames')} ${t(lang, 'playOnline').toLowerCase()}.`,
+    keywords: [slug, catLabel, 'free games', 'online games', 'browser games'].join(', '),
     alternates: {
       canonical: `${baseUrl}/${lang}/category/${slug}`,
       languages: {
@@ -26,6 +27,14 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
         es: `${baseUrl}/es/category/${slug}`,
         ar: `${baseUrl}/ar/category/${slug}`,
       },
+    },
+    openGraph: {
+      title: `${catLabel} ${t(lang, 'categoryGames')} - ${t(lang, 'playOnline')}`,
+      description: `${t(lang, 'bestFree')} ${catLabel.toLowerCase()} ${t(lang, 'categoryGames')} ${t(lang, 'playOnline').toLowerCase()}.`,
+      type: 'website',
+      locale: lang === 'en' ? 'en_US' : lang === 'es' ? 'es_ES' : 'ar_SA',
+      siteName: 'PlayFreeGames',
+      url: `${baseUrl}/${lang}/category/${slug}`,
     },
   };
 }

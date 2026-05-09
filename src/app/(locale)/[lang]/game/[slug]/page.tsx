@@ -9,8 +9,6 @@ import { ShareButtons } from '@/components/ShareButtons';
 import { FavoriteButton } from '@/components/FavoriteButton';
 import type { Metadata } from 'next';
 
-const LOCALES = ['en', 'es', 'ar'] as const;
-
 export function generateStaticParams() {
   return selfGames.map(game => ({ slug: game.slug }));
 }
@@ -25,6 +23,7 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
   return {
     title: `${localized.title} - Play Free Online | PlayFreeGames`,
     description: localized.description,
+    keywords: [...localized.tags, 'free game', 'online game', 'browser game'].join(', '),
     alternates: {
       canonical: `${baseUrl}/${lang}/game/${slug}`,
       languages: {
@@ -37,6 +36,9 @@ export async function generateMetadata({ params }: { params: Promise<{ slug: str
       title: `${localized.title} - Play Free Online`,
       description: localized.description,
       type: 'website',
+      locale: lang === 'en' ? 'en_US' : lang === 'es' ? 'es_ES' : 'ar_SA',
+      siteName: 'PlayFreeGames',
+      url: `${baseUrl}/${lang}/game/${slug}`,
       images: [`${baseUrl}${localized.thumbnail}`],
     },
     twitter: {
