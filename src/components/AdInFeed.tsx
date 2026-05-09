@@ -16,14 +16,14 @@ export function AdInFeed({ slot }: AdInFeedProps) {
   }, []);
 
   return (
-    <div className="my-6 p-4 bg-gray-800/50 rounded-xl">
-      <p className="text-gray-500 text-xs text-center mb-2">Sponsored</p>
+    <div className="my-6 p-4 bg-[#2e2e33] border border-[#333] rounded-xl">
+      <p className="text-[#65656a] text-xs text-center mb-2">Sponsored</p>
       <ins
         className="adsbygoogle"
         style={{ display: 'block', textAlign: 'center' }}
         data-ad-layout="in-article"
         data-ad-format="fluid"
-        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX" // REPLACE with your AdSense publisher ID
+        data-ad-client="ca-pub-XXXXXXXXXXXXXXXX"
         data-ad-slot={slot}
       />
     </div>

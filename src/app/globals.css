@@ -1,8 +1,29 @@
 @import "tailwindcss";
 
+/* DungeonPath color system */
+:root {
+  --dp-bg: #1d1e20;
+  --dp-surface: #2e2e33;
+  --dp-surface-hover: #3a3a40;
+  --dp-border: #333333;
+  --dp-primary: #dadadb;
+  --dp-secondary: #9b9c9d;
+  --dp-tertiary: #65656a;
+  --dp-accent: #7c3aed;
+  --dp-accent-glow: rgba(124, 58, 237, 0.4);
+  --dp-accent-soft: rgba(124, 58, 237, 0.15);
+  --dp-highlight: #a78bfa;
+}
+
 body {
-  background: #0a0a0a;
-  color: #ededed;
+  background: var(--dp-bg);
+  color: var(--dp-primary);
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
+/* Orbitron for headings */
+.font-heading {
+  font-family: 'Orbitron', 'Inter', system-ui, sans-serif;
 }
 
 /* Arabic font fallback */
@@ -10,12 +31,84 @@ body {
   font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Noto Sans Arabic', sans-serif;
 }
 
-/* AdSense ad container styles */
-.adsbygoogle {
-  min-height: 90px;
+/* Neon glow title */
+.neon-title {
+  font-family: 'Orbitron', sans-serif;
+  text-shadow: 0 0 7px var(--dp-accent-glow), 0 0 20px var(--dp-accent-glow), 0 0 40px var(--dp-accent-glow);
+}
+
+/* Neon glow subtle for section headers */
+.neon-subtle {
+  text-shadow: 0 0 10px var(--dp-accent-glow);
+}
+
+/* Neon divider */
+.neon-divider {
+  height: 2px;
+  background: linear-gradient(90deg, transparent, var(--dp-accent), transparent);
+  box-shadow: 0 0 8px var(--dp-accent-glow);
+}
+
+/* Neon button */
+.neon-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.5rem 1.25rem;
+  border: 1px solid var(--dp-accent);
+  border-radius: 0.5rem;
+  color: var(--dp-highlight);
+  font-weight: 600;
+  font-size: 0.875rem;
+  background: var(--dp-accent-soft);
+  box-shadow: 0 0 8px var(--dp-accent-glow), inset 0 0 8px var(--dp-accent-soft);
+  transition: all 0.2s ease;
+}
+
+.neon-btn:hover {
+  background: var(--dp-accent);
+  color: white;
+  box-shadow: 0 0 16px var(--dp-accent-glow), inset 0 0 12px var(--dp-accent-glow);
+}
+
+/* Card styles matching DungeonPath */
+.dp-card {
+  background: var(--dp-surface);
+  border: 1px solid var(--dp-border);
+  border-radius: 0.75rem;
+  transition: all 0.2s ease;
+}
+
+.dp-card:hover {
+  background: var(--dp-surface-hover);
+  border-color: var(--dp-accent);
+  box-shadow: 0 0 12px var(--dp-accent-glow);
 }
 
 /* Smooth scroll */
 html {
   scroll-behavior: smooth;
+}
+
+/* AdSense ad container styles */
+.adsbygoogle {
+  min-height: 90px;
+}
+
+/* Scrollbar styling */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--dp-bg);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--dp-border);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--dp-accent);
 }

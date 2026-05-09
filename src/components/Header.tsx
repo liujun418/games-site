@@ -3,7 +3,7 @@
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
 import { useState } from 'react';
-import { Gamepad2, Menu, X, Search, Heart } from 'lucide-react';
+import { Menu, X, Search, Heart } from 'lucide-react';
 import { SearchBar } from './SearchBar';
 import { t, type SupportedLocale } from '@/i18n';
 
@@ -33,28 +33,37 @@ export function Header({ lang }: HeaderProps) {
     { href: `/${lang}/category/puzzle`, label: t(lang, 'nav.puzzle') },
     { href: `/${lang}/category/action`, label: t(lang, 'nav.action') },
     { href: `/${lang}/category/card`, label: t(lang, 'nav.card') },
+    { href: `/${lang}/all-games`, label: t(lang, 'nav.allGames') },
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-gray-900 border-b border-gray-800">
+    <header className="sticky top-0 z-50 bg-[#1d1e20] border-b border-[#333]">
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-16">
-          <Link href={`/${lang}/`} className="flex items-center gap-2 text-white hover:text-yellow-400 transition">
-            <Gamepad2 className="w-8 h-8 text-yellow-400" />
-            <span className="text-xl font-bold hidden sm:block">{t(lang, 'siteName')}</span>
+        <div className="flex items-center justify-between h-14">
+          {/* Logo */}
+          <Link href={`/${lang}/`} className="flex items-center gap-2 text-white hover:text-[#a78bfa] transition">
+            <span className="text-lg font-heading font-bold tracking-wide neon-subtle">Games</span>
           </Link>
 
-          <nav className="hidden md:flex items-center gap-6">
+          {/* Desktop nav */}
+          <nav className="hidden md:flex items-center gap-5">
             {categoryLinks.map(link => (
-              <Link key={link.href} href={link.href} className="text-gray-300 hover:text-white transition text-sm">{link.label}</Link>
+              <Link
+                key={link.href}
+                href={link.href}
+                className="text-[#9b9c9d] hover:text-white transition text-sm font-medium"
+              >
+                {link.label}
+              </Link>
             ))}
           </nav>
 
+          {/* Right side */}
           <div className="flex items-center gap-2">
-            <Link href={`/${lang}/favorites`} className="p-2 text-gray-300 hover:text-white transition">
+            <Link href={`/${lang}/favorites`} className="p-2 text-[#9b9c9d] hover:text-white transition">
               <Heart className="w-5 h-5" />
             </Link>
-            <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-gray-300 hover:text-white transition">
+            <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-[#9b9c9d] hover:text-white transition">
               <Search className="w-5 h-5" />
             </button>
 
@@ -62,19 +71,19 @@ export function Header({ lang }: HeaderProps) {
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="px-2 py-1 text-sm text-gray-300 hover:text-white border border-gray-700 rounded transition"
+                className="px-2 py-1 text-xs text-[#9b9c9d] hover:text-white border border-[#333] rounded transition font-medium"
               >
                 {LOCALES.find(l => l.code === lang)?.label}
               </button>
               {langOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
-                  <div className="absolute end-0 top-full mt-1 bg-gray-800 rounded-lg shadow-xl border border-gray-700 z-20 overflow-hidden">
+                  <div className="absolute end-0 top-full mt-1 bg-[#2e2e33] rounded-lg shadow-xl border border-[#333] z-20 overflow-hidden">
                     {LOCALES.map(loc => (
                       <button
                         key={loc.code}
                         onClick={() => { switchLang(loc.code); setLangOpen(false); }}
-                        className={`block w-full text-start px-4 py-2 text-sm hover:bg-gray-700 transition ${loc.code === lang ? 'text-yellow-400' : 'text-white'}`}
+                        className={`block w-full text-start px-4 py-2 text-sm hover:bg-[#3a3a40] transition ${loc.code === lang ? 'text-[#a78bfa]' : 'text-white'}`}
                       >
                         {loc.label}
                       </button>
@@ -84,7 +93,7 @@ export function Header({ lang }: HeaderProps) {
               )}
             </div>
 
-            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-gray-300 hover:text-white transition">
+            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-[#9b9c9d] hover:text-white transition">
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
@@ -99,10 +108,9 @@ export function Header({ lang }: HeaderProps) {
         {menuOpen && (
           <nav className="md:hidden pb-4 flex flex-col gap-3">
             {categoryLinks.map(link => (
-              <Link key={link.href} href={link.href} className="text-gray-300 hover:text-white transition text-sm">{link.label}</Link>
+              <Link key={link.href} href={link.href} className="text-[#9b9c9d] hover:text-white transition text-sm">{link.label}</Link>
             ))}
-            <Link href={`/${lang}/all-games`} className="text-gray-300 hover:text-white transition text-sm">{t(lang, 'nav.allGames')}</Link>
-            <Link href={`/${lang}/favorites`} className="text-gray-300 hover:text-white transition text-sm">{t(lang, 'favorites')}</Link>
+            <Link href={`/${lang}/favorites`} className="text-[#9b9c9d] hover:text-white transition text-sm">{t(lang, 'favorites')}</Link>
           </nav>
         )}
       </div>

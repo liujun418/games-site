@@ -43,13 +43,13 @@ export default async function HomePage({ params, searchParams }: { params: Promi
         );
         return (
           <div className="mb-6">
-            <h1 className="text-2xl font-bold text-white mb-4">
+            <h1 className="text-2xl font-heading font-bold text-white mb-4 neon-subtle">
               {t(lang, 'searchResults')} &quot;{params2.q}&quot;
             </h1>
             {results.length > 0 ? (
               <GameGrid games={results} lang={lang} />
             ) : (
-              <p className="text-gray-400">{t(lang, 'noResults')}</p>
+              <p className="text-[#9b9c9d]">{t(lang, 'noResults')}</p>
             )}
           </div>
         );

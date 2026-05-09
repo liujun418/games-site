@@ -23,7 +23,7 @@ export default function FavoritesPage() {
 
   return (
     <>
-      <h1 className="text-2xl font-bold text-white mb-2 flex items-center gap-2">
+      <h1 className="text-2xl font-heading font-bold text-white mb-2 flex items-center gap-2 neon-subtle">
         <Heart className="w-6 h-6 fill-red-500 text-red-500" />
         {t(lang, 'favorites')}
       </h1>
@@ -31,8 +31,8 @@ export default function FavoritesPage() {
         <GameGrid games={favoriteGames} lang={lang} />
       ) : (
         <div className="flex flex-col items-center justify-center py-20 text-center">
-          <Heart className="w-16 h-16 text-gray-700 mb-4" />
-          <p className="text-gray-400">{t(lang, 'noFavorites')}</p>
+          <Heart className="w-16 h-16 text-[#333] mb-4" />
+          <p className="text-[#9b9c9d]">{t(lang, 'noFavorites')}</p>
         </div>
       )}
     </>

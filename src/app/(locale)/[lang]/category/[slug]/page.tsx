@@ -45,8 +45,8 @@ export default async function CategoryPage({ params }: { params: Promise<{ slug:
         type="application/ld+json"
         dangerouslySetInnerHTML={{ __html: JSON.stringify(generateItemListJsonLd(localizedGames, `${baseUrl}/${lang}/category/${slug}`, `${catLabel} ${t(lang, 'categoryGames')}`)) }}
       />
-      <h1 className="text-3xl font-bold text-white mb-2">{catLabel} {t(lang, 'categoryGames')}</h1>
-      <p className="text-gray-400 mb-6">{t(lang, 'bestFree')} {catLabel.toLowerCase()} {t(lang, 'categoryGames').toLowerCase()} {t(lang, 'playOnline').toLowerCase()}.</p>
+      <h1 className="text-3xl font-heading font-bold text-white mb-2 neon-subtle">{catLabel} {t(lang, 'categoryGames')}</h1>
+      <p className="text-[#9b9c9d] mb-6">{t(lang, 'bestFree')} {catLabel.toLowerCase()} {t(lang, 'categoryGames').toLowerCase()} {t(lang, 'playOnline').toLowerCase()}.</p>
       <GameGrid games={localizedGames} lang={lang} />
     </>
   );

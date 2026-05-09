@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { Inter } from "next/font/google";
+import { Inter, Orbitron } from "next/font/google";
 import "@/app/globals.css";
 import { Header } from "@/components/Header";
 import { Footer } from "@/components/Footer";
 import { CookieConsent } from "@/components/CookieConsent";
 import { t, type SupportedLocale } from "@/i18n";
 
-const inter = Inter({ subsets: ["latin"] });
+const inter = Inter({ subsets: ["latin"], variable: "--font-inter" });
+const orbitron = Orbitron({ subsets: ["latin"], variable: "--font-orbitron" });
 
 export async function generateStaticParams() {
   return [{ lang: 'en' }, { lang: 'es' }, { lang: 'ar' }];
@@ -62,7 +63,7 @@ export default async function LocaleLayout({
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
       </head>
-      <body className={`${fontClass} bg-gray-950 text-white min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${orbitron.variable} ${lang === 'ar' ? 'font-arabic' : ''} bg-[#1d1e20] text-[#dadadb] min-h-screen flex flex-col`}>
         <Header lang={lang as SupportedLocale} />
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
           {children}
