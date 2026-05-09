@@ -34,10 +34,10 @@ export function FavoriteButton({ game }: FavoriteButtonProps) {
   return (
     <button
       onClick={toggleFavorite}
-      className="p-1.5 bg-[#1d1e20]/80 rounded-full hover:bg-[#2e2e33] transition"
+      className="p-1.5 bg-[#0a0a1a]/80 rounded-full hover:bg-[#111128] transition"
       aria-label={isFavorite ? 'Remove from favorites' : 'Add to favorites'}
     >
-      <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#9b9c9d]'}`} />
+      <Heart className={`w-4 h-4 ${isFavorite ? 'fill-red-500 text-red-500' : 'text-[#94a3b8]'}`} />
     </button>
   );
 }

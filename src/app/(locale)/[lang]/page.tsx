@@ -43,7 +43,7 @@ export default async function HomePage({ params, searchParams }: { params: Promi
         );
         return (
           <div className="mb-6">
-            <h1 className="text-2xl font-heading font-bold text-white mb-4 neon-subtle">
+            <h1 className="text-2xl font-heading font-[900] mb-4" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>
               {t(lang, 'searchResults')} &quot;{params2.q}&quot;
             </h1>
             {results.length > 0 ? (

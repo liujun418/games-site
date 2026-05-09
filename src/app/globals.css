@@ -1,22 +1,27 @@
 @import "tailwindcss";
 
-/* DungeonPath color system */
+/* DungeonPath color system — matches dungeonpath.com exactly */
 :root {
-  --dp-bg: #1d1e20;
-  --dp-surface: #2e2e33;
-  --dp-surface-hover: #3a3a40;
-  --dp-border: #333333;
-  --dp-primary: #dadadb;
-  --dp-secondary: #9b9c9d;
-  --dp-tertiary: #65656a;
-  --dp-accent: #7c3aed;
-  --dp-accent-glow: rgba(124, 58, 237, 0.4);
-  --dp-accent-soft: rgba(124, 58, 237, 0.15);
-  --dp-highlight: #a78bfa;
+  --dp-bg: #0a0a1a;
+  --dp-surface: #111128;
+  --dp-surface-hover: #1a1a3e;
+  --dp-border: rgba(139, 92, 246, 0.15);
+  --dp-primary: #e2e8f0;
+  --dp-secondary: #94a3b8;
+  --dp-tertiary: rgba(139, 92, 246, 0.2);
+  --dp-accent: #a855f7;
+  --dp-accent-glow: rgba(168, 85, 247, 0.8);
+  --dp-accent-soft: rgba(139, 92, 246, 0.15);
+  --dp-highlight: #c084fc;
+  --dp-glow-bg: radial-gradient(ellipse at top right, rgba(168, 85, 247, 0.08) 0%, transparent 70%);
+  --dp-gradient-brand: linear-gradient(135deg, #a855f7, #06b6d4);
+  --dp-header-bg: rgba(10, 10, 26, 0.95);
 }
 
 body {
   background: var(--dp-bg);
+  background-image: var(--dp-glow-bg);
+  background-attachment: fixed;
   color: var(--dp-primary);
   font-family: 'Inter', system-ui, -apple-system, sans-serif;
 }
@@ -31,44 +36,28 @@ body {
   font-family: 'Segoe UI', 'Tahoma', 'Arial', 'Noto Sans Arabic', sans-serif;
 }
 
-/* Neon glow title */
+/* Neon glow title — matches dungeonpath.com neon */
 .neon-title {
   font-family: 'Orbitron', sans-serif;
-  text-shadow: 0 0 7px var(--dp-accent-glow), 0 0 20px var(--dp-accent-glow), 0 0 40px var(--dp-accent-glow);
+  background: var(--dp-gradient-brand);
+  -webkit-background-clip: text;
+  background-clip: text;
+  -webkit-text-fill-color: transparent;
+  filter: drop-shadow(0 0 10px var(--dp-accent-glow));
 }
 
 /* Neon glow subtle for section headers */
 .neon-subtle {
-  text-shadow: 0 0 10px var(--dp-accent-glow);
+  color: var(--dp-accent);
+  text-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
 }
 
 /* Neon divider */
 .neon-divider {
-  height: 2px;
-  background: linear-gradient(90deg, transparent, var(--dp-accent), transparent);
-  box-shadow: 0 0 8px var(--dp-accent-glow);
-}
-
-/* Neon button */
-.neon-btn {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.5rem;
-  padding: 0.5rem 1.25rem;
-  border: 1px solid var(--dp-accent);
-  border-radius: 0.5rem;
-  color: var(--dp-highlight);
-  font-weight: 600;
-  font-size: 0.875rem;
-  background: var(--dp-accent-soft);
-  box-shadow: 0 0 8px var(--dp-accent-glow), inset 0 0 8px var(--dp-accent-soft);
-  transition: all 0.2s ease;
-}
-
-.neon-btn:hover {
-  background: var(--dp-accent);
-  color: white;
-  box-shadow: 0 0 16px var(--dp-accent-glow), inset 0 0 12px var(--dp-accent-glow);
+  height: 3px;
+  background: var(--dp-gradient-brand);
+  border-radius: 2px;
+  box-shadow: 0 0 8px rgba(168, 85, 247, 0.5);
 }
 
 /* Card styles matching DungeonPath */
@@ -76,13 +65,14 @@ body {
   background: var(--dp-surface);
   border: 1px solid var(--dp-border);
   border-radius: 0.75rem;
-  transition: all 0.2s ease;
+  transition: all 0.25s ease;
 }
 
 .dp-card:hover {
   background: var(--dp-surface-hover);
   border-color: var(--dp-accent);
-  box-shadow: 0 0 12px var(--dp-accent-glow);
+  box-shadow: 0 4px 20px rgba(139, 92, 246, 0.15);
+  transform: translateY(-2px);
 }
 
 /* Smooth scroll */

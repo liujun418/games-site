@@ -18,7 +18,7 @@ export default async function AllGamesPage({ params }: { params: Promise<{ lang:
 
   return (
     <>
-      <h1 className="text-3xl font-heading font-bold text-white mb-6 neon-subtle">{t(lang, 'nav.allGames')}</h1>
+      <h1 className="text-3xl font-heading font-[900] mb-6" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t(lang, 'nav.allGames')}</h1>
       {categories.map(cat => {
         const catGames = allGames.filter(g => g.category === cat);
         const catLabel = getLocalizedCategory(lang, cat);

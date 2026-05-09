@@ -37,12 +37,12 @@ export function Header({ lang }: HeaderProps) {
   ];
 
   return (
-    <header className="sticky top-0 z-50 bg-[#1d1e20] border-b border-[#333]">
+    <header className="sticky top-0 z-50 bg-[rgba(10,10,26,0.95)] backdrop-blur-[10px] border-b-2" style={{ borderColor: 'transparent', borderImage: 'linear-gradient(135deg, #a855f7, #06b6d4)', borderImageSlice: 1 }}>
       <div className="max-w-7xl mx-auto px-4">
-        <div className="flex items-center justify-between h-14">
+        <div className="flex items-center justify-between h-[60px]">
           {/* Logo */}
-          <Link href={`/${lang}/`} className="flex items-center gap-2 text-white hover:text-[#a78bfa] transition">
-            <span className="text-lg font-heading font-bold tracking-wide neon-subtle">Games</span>
+          <Link href={`/${lang}/`} className="flex items-center gap-2 text-[#a855f7] hover:text-[#c084fc] transition">
+            <span className="text-[22px] font-heading font-[900] tracking-wider" style={{ textShadow: '0 0 10px rgba(168,85,247,0.8), 0 0 20px rgba(168,85,247,0.5), 0 0 40px rgba(168,85,247,0.3)' }}>Games</span>
           </Link>
 
           {/* Desktop nav */}
@@ -51,7 +51,7 @@ export function Header({ lang }: HeaderProps) {
               <Link
                 key={link.href}
                 href={link.href}
-                className="text-[#9b9c9d] hover:text-white transition text-sm font-medium"
+                className="text-[#94a3b8] hover:text-[#a855f7] transition text-sm font-[500] relative after:content-[''] after:block after:w-0 after:h-[2px] after:bg-gradient-to-r after:from-[#a855f7] after:to-[#06b6d4] after:mt-[2px] after:transition-[width] after:duration-200 hover:after:w-full"
               >
                 {link.label}
               </Link>
@@ -60,10 +60,10 @@ export function Header({ lang }: HeaderProps) {
 
           {/* Right side */}
           <div className="flex items-center gap-2">
-            <Link href={`/${lang}/favorites`} className="p-2 text-[#9b9c9d] hover:text-white transition">
+            <Link href={`/${lang}/favorites`} className="p-2 text-[#94a3b8] hover:text-[#a855f7] transition">
               <Heart className="w-5 h-5" />
             </Link>
-            <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-[#9b9c9d] hover:text-white transition">
+            <button onClick={() => setSearchOpen(!searchOpen)} className="p-2 text-[#94a3b8] hover:text-[#a855f7] transition">
               <Search className="w-5 h-5" />
             </button>
 
@@ -71,19 +71,19 @@ export function Header({ lang }: HeaderProps) {
             <div className="relative">
               <button
                 onClick={() => setLangOpen(!langOpen)}
-                className="px-2 py-1 text-xs text-[#9b9c9d] hover:text-white border border-[#333] rounded transition font-medium"
+                className="px-2 py-1 text-xs text-[#94a3b8] hover:text-[#a855f7] border border-[rgba(139,92,246,0.15)] rounded transition font-[500]"
               >
                 {LOCALES.find(l => l.code === lang)?.label}
               </button>
               {langOpen && (
                 <>
                   <div className="fixed inset-0 z-10" onClick={() => setLangOpen(false)} />
-                  <div className="absolute end-0 top-full mt-1 bg-[#2e2e33] rounded-lg shadow-xl border border-[#333] z-20 overflow-hidden">
+                  <div className="absolute end-0 top-full mt-1 bg-[#111128] rounded-lg shadow-xl border border-[rgba(139,92,246,0.15)] z-20 overflow-hidden">
                     {LOCALES.map(loc => (
                       <button
                         key={loc.code}
                         onClick={() => { switchLang(loc.code); setLangOpen(false); }}
-                        className={`block w-full text-start px-4 py-2 text-sm hover:bg-[#3a3a40] transition ${loc.code === lang ? 'text-[#a78bfa]' : 'text-white'}`}
+                        className={`block w-full text-start px-4 py-2 text-sm hover:bg-[#1a1a3e] transition ${loc.code === lang ? 'text-[#a855f7]' : 'text-[#e2e8f0]'}`}
                       >
                         {loc.label}
                       </button>
@@ -93,7 +93,7 @@ export function Header({ lang }: HeaderProps) {
               )}
             </div>
 
-            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-[#9b9c9d] hover:text-white transition">
+            <button onClick={() => setMenuOpen(!menuOpen)} className="md:hidden p-2 text-[#94a3b8] hover:text-[#a855f7] transition">
               {menuOpen ? <X className="w-5 h-5" /> : <Menu className="w-5 h-5" />}
             </button>
           </div>
@@ -108,9 +108,9 @@ export function Header({ lang }: HeaderProps) {
         {menuOpen && (
           <nav className="md:hidden pb-4 flex flex-col gap-3">
             {categoryLinks.map(link => (
-              <Link key={link.href} href={link.href} className="text-[#9b9c9d] hover:text-white transition text-sm">{link.label}</Link>
+              <Link key={link.href} href={link.href} className="text-[#94a3b8] hover:text-[#a855f7] transition text-sm">{link.label}</Link>
             ))}
-            <Link href={`/${lang}/favorites`} className="text-[#9b9c9d] hover:text-white transition text-sm">{t(lang, 'favorites')}</Link>
+            <Link href={`/${lang}/favorites`} className="text-[#94a3b8] hover:text-[#a855f7] transition text-sm">{t(lang, 'favorites')}</Link>
           </nav>
         )}
       </div>

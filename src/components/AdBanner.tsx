@@ -24,8 +24,8 @@ export function AdBanner({ slot, format = 'auto', className = '' }: AdBannerProp
   }, []);
 
   return (
-    <div className={`flex justify-center my-4 p-4 bg-[#2e2e33] border border-[#333] rounded-xl ${className}`}>
-      <p className="text-[#65656a] text-xs text-center mb-2 absolute top-2 left-1/2 -translate-x-1/2">Sponsored</p>
+    <div className={`flex justify-center my-4 p-4 bg-[#111128] border border-[rgba(139,92,246,0.15)] rounded-xl ${className}`}>
+      <p className="text-[#94a3b8] text-xs text-center mb-2 absolute top-2 left-1/2 -translate-x-1/2">Sponsored</p>
       <ins
         className="adsbygoogle"
         style={{ display: 'block' }}

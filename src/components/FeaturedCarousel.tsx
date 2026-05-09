@@ -28,16 +28,16 @@ export function FeaturedCarousel({ games, lang }: FeaturedCarouselProps) {
   const current = featured[index];
 
   return (
-    <div className="relative rounded-xl overflow-hidden mb-10 bg-[#2e2e33] border border-[#333]">
+    <div className="relative rounded-xl overflow-hidden mb-10 bg-[#111128] border border-[rgba(139,92,246,0.15)]">
       <div className="relative aspect-[16/6] md:aspect-[21/6]">
         <Image src={current.thumbnail} alt={current.title} fill className="object-cover" priority unoptimized />
-        <div className="absolute inset-0 bg-gradient-to-r from-[#1d1e20]/90 via-[#1d1e20]/60 to-transparent" />
+        <div className="absolute inset-0 bg-gradient-to-r from-[#0a0a1a]/90 via-[#0a0a1a]/60 to-transparent" />
         <div className="absolute inset-0 flex items-center">
           <div className="px-8 md:px-12 max-w-lg">
-            <span className="bg-[#7c3aed] text-white text-xs font-bold px-3 py-1 rounded-full">{t(lang, 'featured')}</span>
-            <h2 className="text-white text-2xl md:text-4xl font-heading font-bold mt-3 neon-subtle">{current.title}</h2>
-            <p className="text-[#9b9c9d] text-sm mt-2 line-clamp-2">{current.description}</p>
-            <Link href={`/${lang}/game/${current.slug}`} className="inline-flex items-center gap-2 bg-[#7c3aed] hover:bg-[#6d28d9] text-white font-semibold px-5 py-2.5 rounded-lg mt-4 transition shadow-[0_0_12px_rgba(124,58,237,0.4)]">
+            <span className="bg-[#a855f7] text-white text-xs font-bold px-3 py-1 rounded-full">{t(lang, 'featured')}</span>
+            <h2 className="text-white text-2xl md:text-4xl font-heading font-[900] mt-3" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{current.title}</h2>
+            <p className="text-[#94a3b8] text-sm mt-2 line-clamp-2">{current.description}</p>
+            <Link href={`/${lang}/game/${current.slug}`} className="inline-flex items-center gap-2 bg-[linear-gradient(135deg,#a855f7,#06b6d4)] hover:opacity-90 text-white font-semibold px-5 py-2.5 rounded-lg mt-4 transition shadow-[0_4px_20px_rgba(139,92,246,0.15)]">
               <Play className="w-4 h-4" /> {t(lang, 'playNow')}
             </Link>
           </div>
@@ -48,7 +48,7 @@ export function FeaturedCarousel({ games, lang }: FeaturedCarouselProps) {
           <button
             key={i}
             onClick={() => setIndex(i)}
-            className={`w-2.5 h-2.5 rounded-full transition ${i === index ? 'bg-[#7c3aed] shadow-[0_0_6px_rgba(124,58,237,0.6)]' : 'bg-white/40 hover:bg-white/60'}`}
+            className={`w-2.5 h-2.5 rounded-full transition ${i === index ? 'bg-[#a855f7] shadow-[0_0_6px_rgba(168,85,247,0.6)]' : 'bg-white/40 hover:bg-white/60'}`}
           />
         ))}
       </div>

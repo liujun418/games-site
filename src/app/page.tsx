@@ -48,9 +48,9 @@ export default function HomePage() {
 
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
-      <h1 className="text-3xl font-heading font-bold text-white mb-2 neon-title">PlayFreeGames</h1>
+      <h1 className="text-3xl font-heading font-[900] mb-2" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PlayFreeGames</h1>
       {redirecting && (
-        <div className="flex items-center gap-2 text-[#9b9c9d] mt-4">
+        <div className="flex items-center gap-2 text-[#94a3b8] mt-4">
           <Loader2 className="w-4 h-4 animate-spin" />
           <span>Loading...</span>
         </div>

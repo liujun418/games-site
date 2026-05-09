@@ -80,8 +80,8 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
       <div className="mb-4">
         <div className="flex items-start justify-between gap-4 flex-wrap">
           <div className="flex-1 min-w-0">
-            <h1 className="text-2xl md:text-3xl font-heading font-bold text-white neon-subtle">{localized.title}</h1>
-            <p className="text-[#9b9c9d] mt-1 text-sm">{localized.description}</p>
+            <h1 className="text-2xl md:text-3xl font-heading font-[900] mb-2" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{localized.title}</h1>
+            <p className="text-[#94a3b8] mt-1 text-sm">{localized.description}</p>
           </div>
           <div className="flex items-center gap-2 shrink-0">
             <FavoriteButton game={game} />
@@ -90,7 +90,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
         </div>
         <div className="flex gap-2 mt-3 flex-wrap">
           {localized.tags.map(tag => (
-            <span key={tag} className="bg-[#7c3aed]/15 text-[#a78bfa] text-xs px-3 py-1 rounded-full">{tag}</span>
+            <span key={tag} className="bg-[rgba(139,92,246,0.15)] text-[#c084fc] text-xs px-3 py-1 rounded-full">{tag}</span>
           ))}
         </div>
       </div>
@@ -101,7 +101,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
           <AdBanner slot="5566778899" format="horizontal" />
         </div>
         <div className="lg:col-span-1">
-          <div className="bg-[#2e2e33] border border-[#333] rounded-xl p-4 sticky top-20">
+          <div className="bg-[#111128] border border-[rgba(139,92,246,0.15)] rounded-xl p-4 sticky top-20">
             <AdBanner slot="9988776655" format="rectangle" />
           </div>
         </div>

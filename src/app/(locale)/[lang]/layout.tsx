@@ -63,7 +63,7 @@ export default async function LocaleLayout({
       <head>
         <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js" />
       </head>
-      <body className={`${inter.variable} ${orbitron.variable} ${lang === 'ar' ? 'font-arabic' : ''} bg-[#1d1e20] text-[#dadadb] min-h-screen flex flex-col`}>
+      <body className={`${inter.variable} ${orbitron.variable} ${lang === 'ar' ? 'font-arabic' : ''} min-h-screen flex flex-col`}>
         <Header lang={lang as SupportedLocale} />
         <main className="flex-1 max-w-7xl w-full mx-auto px-4 py-6">
           {children}
