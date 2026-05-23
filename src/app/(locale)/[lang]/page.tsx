@@ -1,10 +1,11 @@
 import { selfGames, getFeaturedGames, getCategories } from '@/data';
 import { getLocaleGame, getLocalizedCategory, t } from '@/i18n';
-import type { SupportedLocale } from '@/i18n/translations';
 import { FeaturedCarousel } from '@/components/FeaturedCarousel';
 import { GameGrid } from '@/components/GameGrid';
+import { DailyPick } from '@/components/DailyPick';
 import { AdBanner } from '@/components/AdBanner';
 import { AdInFeed } from '@/components/AdInFeed';
+import { getDailyGame, getGamesForShelf, getRecentlyAddedGames, homeShelves } from '@/data/curation';
 import type { Metadata } from 'next';
 
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
@@ -29,15 +30,18 @@ function localizeGames(lang: string) {
 
 export default async function HomePage({ params, searchParams }: { params: Promise<{ lang: string }>; searchParams: Promise<{ q?: string }> }) {
   const { lang } = await params;
-  const locale = lang as SupportedLocale;
   const allGames = localizeGames(lang);
   const featured = getFeaturedGames().map(game => getLocaleGame(lang, game));
   const categories = getCategories();
+  const dailyGame = getDailyGame(allGames);
+  const recentGames = getRecentlyAddedGames(allGames);
   const params2 = await searchParams;
 
   return (
     <>
       <FeaturedCarousel games={featured} lang={lang} />
+
+      {dailyGame && <DailyPick game={dailyGame} lang={lang} />}
 
       {params2?.q && (() => {
         const results = allGames.filter(g =>
@@ -59,6 +63,23 @@ export default async function HomePage({ params, searchParams }: { params: Promi
       })()}
 
       <AdBanner slot="1234567890" format="horizontal" />
+
+      <GameGrid games={recentGames} title={t(lang, 'recentlyAdded')} lang={lang} />
+
+      <section className="mb-10">
+        <h2 className="text-xl font-heading font-bold mb-4" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>{t(lang, 'curatedForYou')}</h2>
+        <div className="grid gap-2">
+          {homeShelves.map(shelf => {
+            const shelfGames = getGamesForShelf(allGames, shelf).slice(0, 4);
+            if (shelfGames.length === 0) return null;
+            return (
+              <div key={shelf.key}>
+                <GameGrid games={shelfGames} title={t(lang, shelf.titleKey)} lang={lang} />
+              </div>
+            );
+          })}
+        </div>
+      </section>
 
       {categories.map(cat => {
         const catGames = allGames.filter(g => g.category === cat);

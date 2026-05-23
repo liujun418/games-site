@@ -17,7 +17,7 @@ export function getLocaleGame(lang: string, game: Game): Game {
   const locale = (lang as SupportedLocale) in localizedGames ? lang as SupportedLocale : DEFAULT_LOCALE;
   const localized = localizedGames[locale]?.[game.slug];
   if (!localized) return game;
-  return { ...game, title: localized.title, description: localized.description, category: localized.category, tags: localized.tags };
+  return { ...game, title: localized.title, description: localized.description, tags: localized.tags };
 }
 
 export function getLocalizedCategory(lang: string, categorySlug: string): string {

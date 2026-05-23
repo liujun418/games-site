@@ -10,7 +10,7 @@ export function AdInFeed({ slot }: AdInFeedProps) {
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
+    } catch {
       // AdSense not loaded yet
     }
   }, []);

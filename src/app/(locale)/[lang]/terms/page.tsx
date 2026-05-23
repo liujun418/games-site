@@ -23,12 +23,12 @@ export default async function TermsPage({ params }: { params: Promise<{ lang: st
 
       <section className="mb-6">
         <h2 className={h2Cls}>1. Acceptance of Terms</h2>
-        <p className={pCls}>By accessing and using game.dungeonpath.com (the "Site"), you accept and agree to be bound by these Terms of Service ("Terms"). If you do not agree to these Terms, do not use the Site. We may modify these Terms at any time, and your continued use constitutes acceptance of changes.</p>
+        <p className={pCls}>By accessing and using game.dungeonpath.com (the &quot;Site&quot;), you accept and agree to be bound by these Terms of Service (&quot;Terms&quot;). If you do not agree to these Terms, do not use the Site. We may modify these Terms at any time, and your continued use constitutes acceptance of changes.</p>
       </section>
 
       <section className="mb-6">
         <h2 className={h2Cls}>2. Description of Service</h2>
-        <p className={pCls}>PlayFreeGames provides a platform for playing free browser-based HTML5 games. The service includes self-developed games and third-party games provided by GameDistribution. No account registration or download is required. The service is provided "as is" and "as available" without warranties of any kind.</p>
+        <p className={pCls}>PlayFreeGames provides a platform for playing free browser-based HTML5 games. The service includes self-developed games and third-party games provided by GameDistribution. No account registration or download is required. The service is provided &quot;as is&quot; and &quot;as available&quot; without warranties of any kind.</p>
       </section>
 
       <section className="mb-6">
@@ -66,7 +66,7 @@ export default async function TermsPage({ params }: { params: Promise<{ lang: st
 
       <section className="mb-6">
         <h2 className={h2Cls}>8. Disclaimers</h2>
-        <p className={pCls}>THE SITE AND ALL GAMES ARE PROVIDED "AS IS" WITHOUT WARRANTY OF ANY KIND. WE DO NOT WARRANT THAT: (A) THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE; (B) DEFECTS WILL BE CORRECTED; OR (C) THE SITE OR SERVERS ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
+        <p className={pCls}>THE SITE AND ALL GAMES ARE PROVIDED &quot;AS IS&quot; WITHOUT WARRANTY OF ANY KIND. WE DO NOT WARRANT THAT: (A) THE SERVICE WILL BE UNINTERRUPTED OR ERROR-FREE; (B) DEFECTS WILL BE CORRECTED; OR (C) THE SITE OR SERVERS ARE FREE OF VIRUSES OR OTHER HARMFUL COMPONENTS.</p>
       </section>
 
       <section className="mb-6">

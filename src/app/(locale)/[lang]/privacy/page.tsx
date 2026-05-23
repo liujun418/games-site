@@ -23,7 +23,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ lang: 
 
       <section className="mb-6">
         <h2 className={h2Cls}>1. Introduction</h2>
-        <p className={pCls}>PlayFreeGames ("we", "our", or "us") operates game.dungeonpath.com (the "Site"). We respect your privacy and are committed to protecting your personal data in compliance with applicable privacy laws including the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Site.</p>
+        <p className={pCls}>PlayFreeGames (&quot;we&quot;, &quot;our&quot;, or &quot;us&quot;) operates game.dungeonpath.com (the &quot;Site&quot;). We respect your privacy and are committed to protecting your personal data in compliance with applicable privacy laws including the General Data Protection Regulation (GDPR) and the California Consumer Privacy Act (CCPA). This Privacy Policy explains how we collect, use, disclose, and safeguard your information when you use our Site.</p>
       </section>
 
       <section className="mb-6">
@@ -84,7 +84,7 @@ export default async function PrivacyPage({ params }: { params: Promise<{ lang: 
 
       <section className="mb-6">
         <h2 className={h2Cls}>10. Changes to This Policy</h2>
-        <p className={pCls}>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated "Last updated" date. We encourage you to review this policy periodically.</p>
+        <p className={pCls}>We may update this Privacy Policy from time to time. Changes will be posted on this page with an updated &quot;Last updated&quot; date. We encourage you to review this policy periodically.</p>
       </section>
 
       <section className="mb-6">

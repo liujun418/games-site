@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { useParams } from 'next/navigation';
 import { selfGames } from '@/data';
 import { getLocaleGame, t } from '@/i18n';
@@ -10,12 +10,10 @@ import { Heart } from 'lucide-react';
 export default function FavoritesPage() {
   const params = useParams();
   const lang = (params?.lang as string) || 'en';
-  const [favorites, setFavorites] = useState<string[]>([]);
-
-  useEffect(() => {
-    const stored = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setFavorites(stored);
-  }, []);
+  const [favorites] = useState<string[]>(() => {
+    if (typeof window === 'undefined') return [];
+    return JSON.parse(localStorage.getItem('favorites') || '[]');
+  });
 
   const favoriteGames = selfGames
     .filter(game => favorites.includes(game.id))

@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { usePathname } from 'next/navigation';
+import { usePathname, useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { Menu, X, Search, Heart } from 'lucide-react';
 import { SearchBar } from './SearchBar';
@@ -22,10 +22,11 @@ export function Header({ lang }: HeaderProps) {
   const [searchOpen, setSearchOpen] = useState(false);
   const [langOpen, setLangOpen] = useState(false);
   const pathname = usePathname();
+  const router = useRouter();
 
   const switchLang = (newLang: SupportedLocale) => {
     const currentPath = pathname?.replace(/^\/(en|es|ar)/, '') || '/';
-    window.location.href = `/${newLang}${currentPath}`;
+    router.push(`/${newLang}${currentPath}`);
   };
 
   const categoryLinks = [

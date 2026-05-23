@@ -1,12 +1,14 @@
 import { notFound } from 'next/navigation';
-import { getGameBySlug, selfGames, getCategories } from '@/data';
+import { getGameBySlug, selfGames } from '@/data';
 import { getLocaleGame, t } from '@/i18n';
 import { GamePlayer } from '@/components/GamePlayer';
 import { GameGrid } from '@/components/GameGrid';
+import { GameGuide } from '@/components/GameGuide';
 import { AdBanner } from '@/components/AdBanner';
 import { gameJsonLd, generateBreadcrumbsJsonLd } from '@/utils/seo';
 import { ShareButtons } from '@/components/ShareButtons';
 import { FavoriteButton } from '@/components/FavoriteButton';
+import { getGameGuide } from '@/data/game-guides';
 import type { Metadata } from 'next';
 
 export function generateStaticParams() {
@@ -56,6 +58,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
   if (!game) notFound();
 
   const localized = getLocaleGame(lang, game);
+  const guide = getGameGuide(slug);
 
   const related = selfGames
     .map(g => getLocaleGame(lang, g))
@@ -77,6 +80,18 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
           { name: t(lang, 'backHome'), url: `${baseUrl}/${lang}/` },
           { name: localized.title, url: gameUrl },
         ])) }}
+      />
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify({
+          '@context': 'https://schema.org',
+          '@type': 'FAQPage',
+          mainEntity: guide.faq.map(item => ({
+            '@type': 'Question',
+            name: item.question,
+            acceptedAnswer: { '@type': 'Answer', text: item.answer },
+          })),
+        }) }}
       />
 
       <div className="mb-4">
@@ -100,6 +115,7 @@ export default async function GamePage({ params }: { params: Promise<{ slug: str
       <div className="grid grid-cols-1 lg:grid-cols-4 gap-6">
         <div className="lg:col-span-3">
           <GamePlayer game={game} />
+          <GameGuide guide={guide} lang={lang} title={localized.title} />
           <AdBanner slot="5566778899" format="horizontal" />
         </div>
         <div className="lg:col-span-1">

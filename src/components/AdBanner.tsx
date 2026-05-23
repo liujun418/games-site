@@ -18,7 +18,7 @@ export function AdBanner({ slot, format = 'auto', className = '' }: AdBannerProp
   useEffect(() => {
     try {
       (window.adsbygoogle = window.adsbygoogle || []).push({});
-    } catch (e) {
+    } catch {
       // AdSense not loaded yet
     }
   }, []);

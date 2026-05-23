@@ -16,7 +16,9 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: { params: Promise<{ lang: string }> }): Promise<Metadata> {
   const { lang } = await params;
   const localeMap: Record<string, string> = { en: 'en_US', es: 'es_ES', ar: 'ar_SA' };
+  const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 'https://game.dungeonpath.com';
   return {
+    metadataBase: new URL(baseUrl),
     title: {
       default: `${t(lang, 'siteName')} - ${t(lang, 'tagline')}`,
       template: `%s | ${t(lang, 'siteName')}`,
@@ -25,11 +27,11 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
     keywords: ["free games", "online games", "browser games", "HTML5 games", "puzzle games", "arcade games", "play free games", "wordle", "stack tower", "brick breaker"],
     robots: "index, follow",
     alternates: {
-      canonical: `https://game.dungeonpath.com/${lang}/`,
+      canonical: `${baseUrl}/${lang}/`,
       languages: {
-        en: 'https://game.dungeonpath.com/en/',
-        es: 'https://game.dungeonpath.com/es/',
-        ar: 'https://game.dungeonpath.com/ar/',
+        en: `${baseUrl}/en/`,
+        es: `${baseUrl}/es/`,
+        ar: `${baseUrl}/ar/`,
       },
     },
     openGraph: {
@@ -38,7 +40,7 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
       type: "website",
       locale: localeMap[lang] || 'en_US',
       siteName: 'PlayFreeGames',
-      url: `https://game.dungeonpath.com/${lang}/`,
+      url: `${baseUrl}/${lang}/`,
       images: [{ url: '/images/og-site.svg', width: 1200, height: 630, alt: 'PlayFreeGames' }],
     },
     twitter: {
@@ -52,12 +54,12 @@ export async function generateMetadata({ params }: { params: Promise<{ lang: str
         '@context': 'https://schema.org',
         '@type': 'WebSite',
         name: 'PlayFreeGames',
-        url: `https://game.dungeonpath.com/${lang}/`,
+        url: `${baseUrl}/${lang}/`,
         description: t(lang, 'seoDesc'),
         inLanguage: lang,
         potentialAction: {
           '@type': 'SearchAction',
-          target: `https://game.dungeonpath.com/${lang}/?q={search_term_string}`,
+          target: `${baseUrl}/${lang}/?q={search_term_string}`,
           'query-input': 'required name=search_term_string',
         },
       }),
@@ -74,7 +76,6 @@ export default async function LocaleLayout({
 }>) {
   const { lang } = await params;
   const dir = lang === 'ar' ? 'rtl' : 'ltr';
-  const fontClass = lang === 'ar' ? `${inter.className} font-arabic` : inter.className;
 
   return (
     <html lang={lang} dir={dir}>

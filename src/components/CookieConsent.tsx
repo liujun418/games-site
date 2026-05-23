@@ -1,14 +1,19 @@
 'use client';
 
 import { useState, useEffect } from 'react';
+import Link from 'next/link';
+import { usePathname } from 'next/navigation';
 
 export function CookieConsent() {
   const [visible, setVisible] = useState(false);
+  const pathname = usePathname();
+  const lang = pathname?.match(/^\/(en|es|ar)(\/|$)/)?.[1] ?? 'en';
 
   useEffect(() => {
     const accepted = localStorage.getItem('cookie-consent');
     if (!accepted) {
-      setVisible(true);
+      const timer = window.setTimeout(() => setVisible(true), 0);
+      return () => window.clearTimeout(timer);
     }
   }, []);
 
@@ -25,7 +30,7 @@ export function CookieConsent() {
         <div className="text-sm text-[#94a3b8]">
           <p>We use cookies to improve your experience and show personalized ads. By continuing, you agree to our use of cookies.</p>
           <p className="mt-1">
-            <a href="/privacy" className="text-[#a855f7] hover:underline">Learn more</a>
+            <Link href={`/${lang}/privacy`} className="text-[#a855f7] hover:underline">Learn more</Link>
           </p>
         </div>
         <div className="flex gap-3">

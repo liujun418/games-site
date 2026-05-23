@@ -1,11 +1,9 @@
 'use client';
 
-import { useEffect, useState } from 'react';
+import { useEffect } from 'react';
 import { Loader2 } from 'lucide-react';
 
 export default function HomePage() {
-  const [redirecting, setRedirecting] = useState(true);
-
   useEffect(() => {
     const redirect = async () => {
       // Check localStorage for saved preference
@@ -49,12 +47,10 @@ export default function HomePage() {
   return (
     <div className="flex flex-col items-center justify-center min-h-[80vh] text-center">
       <h1 className="text-3xl font-heading font-[900] mb-2" style={{ background: 'linear-gradient(135deg, #a855f7, #06b6d4)', WebkitBackgroundClip: 'text', backgroundClip: 'text', WebkitTextFillColor: 'transparent' }}>PlayFreeGames</h1>
-      {redirecting && (
-        <div className="flex items-center gap-2 text-[#94a3b8] mt-4">
-          <Loader2 className="w-4 h-4 animate-spin" />
-          <span>Loading...</span>
-        </div>
-      )}
+      <div className="flex items-center gap-2 text-[#94a3b8] mt-4">
+        <Loader2 className="w-4 h-4 animate-spin" />
+        <span>Loading...</span>
+      </div>
     </div>
   );
 }

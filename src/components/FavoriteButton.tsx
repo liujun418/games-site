@@ -1,6 +1,6 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState } from 'react';
 import { Heart } from 'lucide-react';
 import type { Game } from '@/types/game';
 
@@ -9,12 +9,11 @@ interface FavoriteButtonProps {
 }
 
 export function FavoriteButton({ game }: FavoriteButtonProps) {
-  const [isFavorite, setIsFavorite] = useState(false);
-
-  useEffect(() => {
+  const [isFavorite, setIsFavorite] = useState(() => {
+    if (typeof window === 'undefined') return false;
     const favorites = JSON.parse(localStorage.getItem('favorites') || '[]');
-    setIsFavorite(favorites.includes(game.id));
-  }, [game.id]);
+    return favorites.includes(game.id);
+  });
 
   const toggleFavorite = (e: React.MouseEvent) => {
     e.preventDefault();
