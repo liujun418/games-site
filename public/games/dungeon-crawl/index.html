@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dungeon Crawl - Play Free Online</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#1e1b4b,#080b16 70%);font-family:Arial,sans-serif;color:#e2e8f0;display:flex;align-items:center;justify-content:center}.game{width:min(96vw,920px);display:grid;grid-template-columns:1fr 260px;gap:14px;padding:14px}.panel,.board{background:#111827;border:1px solid #334155;border-radius:14px;box-shadow:0 20px 50px #0008}.board{display:grid;grid-template-columns:repeat(10,1fr);gap:4px;padding:10px}.tile{aspect-ratio:1;border-radius:8px;background:#1f2937;display:flex;align-items:center;justify-content:center;font-size:clamp(18px,4vw,28px);font-weight:900}.wall{background:#020617}.fog{background:#0b1020;color:transparent}.player{background:#16a34a}.exit{background:#7c3aed}.monster{background:#7f1d1d}.boss{background:#991b1b}.gold{background:#854d0e}.potion{background:#0f766e}.panel{padding:14px}.stats{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin:10px 0}.stat{background:#0f172a;border:1px solid #334155;border-radius:9px;padding:9px}.log{height:130px;overflow:auto;background:#020617;border-radius:10px;padding:10px;color:#94a3b8;font-size:13px}.actions{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;margin-top:12px}.actions button,.mainbtn{border:0;border-radius:9px;background:#38bdf8;color:#082f49;font-weight:900;padding:11px;cursor:pointer}.mainbtn{width:100%;margin-top:10px;background:#a78bfa;color:white}@media(max-width:760px){.game{grid-template-columns:1fr}.panel{order:-1}.log{height:88px}}
+</style>
+</head>
+<body>
+<main class="game">
+  <section class="board" id="board"></section>
+  <aside class="panel">
+    <h1>Dungeon Crawl</h1>
+    <div class="stats">
+      <div class="stat">Floor<br><b id="floor">1</b></div><div class="stat">HP<br><b id="hp">30</b></div>
+      <div class="stat">ATK<br><b id="atk">6</b></div><div class="stat">Gold<br><b id="gold">0</b></div>
+      <div class="stat">XP<br><b id="xp">0</b></div><div class="stat">Best<br><b id="best">0</b></div>
+    </div>
+    <div class="log" id="log"></div>
+    <div class="actions">
+      <span></span><button onclick="move(0,-1)">Up</button><span></span>
+      <button onclick="move(-1,0)">Left</button><button onclick="rest()">Rest</button><button onclick="move(1,0)">Right</button>
+      <span></span><button onclick="move(0,1)">Down</button><span></span>
+    </div>
+    <button class="mainbtn" onclick="newRun()">New Run</button>
+  </aside>
+</main>
+<script>
+const N=10,boardEl=document.getElementById('board'),logEl=document.getElementById('log');let map,p,over=false;
+function newRun(){p={x:1,y:1,floor:1,hp:34,max:34,atk:6,gold:0,xp:0,seen:new Set()};over=false;makeFloor();log('A new dungeon opens.');}
+function makeFloor(){map=Array.from({length:N},(_,y)=>Array.from({length:N},(_,x)=>({t:(x===0||y===0||x===N-1||y===N-1||Math.random()<.12)?'wall':'floor'})));p.x=1;p.y=1;map[1][1].t='floor';place('exit',1);place('potion',2);place('gold',4);place('monster',7+p.floor);if(p.floor===3)place('boss',1);reveal();draw();}
+function place(t,c){while(c--){let x,y;do{x=1+Math.floor(Math.random()*(N-2));y=1+Math.floor(Math.random()*(N-2));}while(map[y][x].t!=='floor'||(x===1&&y===1));map[y][x]={t,hp:t==='boss'?30+p.floor*8:12+p.floor*4,atk:t==='boss'?7+p.floor*2:3+p.floor};}}
+function reveal(){for(let y=p.y-1;y<=p.y+1;y++)for(let x=p.x-1;x<=p.x+1;x++)if(map[y]&&map[y][x])p.seen.add(x+','+y);}
+function draw(){['floor','hp','atk','gold','xp'].forEach(id=>document.getElementById(id).textContent=p[id]);document.getElementById('best').textContent=localStorage.getItem('dungeon-best')||0;boardEl.innerHTML='';for(let y=0;y<N;y++)for(let x=0;x<N;x++){const d=document.createElement('div'),seen=p.seen.has(x+','+y);let cls='tile '+(seen?map[y][x].t:'fog');if(x===p.x&&y===p.y)cls='tile player';d.className=cls;d.textContent=icon(x,y,seen);boardEl.appendChild(d);}}
+function icon(x,y,seen){if(x===p.x&&y===p.y)return '@';if(!seen)return '';return {wall:'#',floor:'',exit:'>',monster:'M',boss:'B',gold:'$',potion:'+'}[map[y][x].t]||'';}
+function move(dx,dy){if(over)return;const nx=p.x+dx,ny=p.y+dy,c=map[ny][nx];if(c.t==='wall')return log('A wall blocks the path.');if(c.t==='monster'||c.t==='boss')return fight(c,nx,ny);if(c.t==='gold'){const g=8+p.floor*4;p.gold+=g;log('Found '+g+' gold.');c.t='floor'}if(c.t==='potion'){p.hp=Math.min(p.max,p.hp+14);log('Drank a healing potion.');c.t='floor'}if(c.t==='exit'){if(p.floor===3)return win();p.floor++;p.atk++;p.max+=4;p.hp=p.max;log('You descend to floor '+p.floor+'.');return makeFloor();}p.x=nx;p.y=ny;monstersAct();reveal();draw();}
+function fight(c,x,y){c.hp-=p.atk;log('You strike for '+p.atk+'.');if(c.hp<=0){map[y][x].t='floor';p.xp+=c.t==='boss'?20:5;p.gold+=c.t==='boss'?30:6;if(p.xp>=15){p.xp-=15;p.atk+=2;p.max+=5;p.hp+=5;log('Level up!')}if(c.t==='boss'&&p.floor===3)return win();}else{p.hp-=c.atk;log('Enemy hits for '+c.atk+'.');}if(p.hp<=0)return lose();reveal();draw();}
+function monstersAct(){for(let y=1;y<N-1;y++)for(let x=1;x<N-1;x++){const c=map[y][x];if((c.t==='monster'||c.t==='boss')&&Math.abs(x-p.x)+Math.abs(y-p.y)===1){p.hp-=c.atk;log('A foe claws you for '+c.atk+'.');if(p.hp<=0)lose();return;}}}
+function rest(){if(over)return;p.hp=Math.min(p.max,p.hp+3);log('You catch your breath.');monstersAct();draw();}
+function win(){over=true;const score=p.gold+p.floor*50+p.xp;localStorage.setItem('dungeon-best',Math.max(score,localStorage.getItem('dungeon-best')||0));log('Victory! Score '+score+'.');draw();}
+function lose(){over=true;log('You fall in the dungeon.');draw();}
+function log(s){logEl.innerHTML='<div>'+s+'</div>'+logEl.innerHTML;}
+newRun();
+</script>
+</body>
+</html>

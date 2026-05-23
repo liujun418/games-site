@@ -1,0 +1,16 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#07111f"/>
+  <path d="M22 152h78c38 0 34-78 78-78h58c45 0 36 86 84 86h58" fill="none" stroke="#475569" stroke-width="28" stroke-linecap="round"/>
+  <path d="M22 152h78c38 0 34-78 78-78h58c45 0 36 86 84 86h58" fill="none" stroke="#1e293b" stroke-width="18" stroke-linecap="round"/>
+  <g>
+    <rect x="88" y="74" width="34" height="48" rx="5" fill="#06b6d4"/>
+    <rect x="78" y="62" width="54" height="18" rx="5" fill="#67e8f9"/>
+    <circle cx="105" cy="58" r="10" fill="#facc15"/>
+    <rect x="252" y="36" width="34" height="48" rx="5" fill="#7c3aed"/>
+    <rect x="242" y="24" width="54" height="18" rx="5" fill="#a78bfa"/>
+    <circle cx="269" cy="20" r="10" fill="#facc15"/>
+  </g>
+  <circle cx="310" cy="160" r="15" fill="#ef4444"/>
+  <circle cx="342" cy="160" r="12" fill="#f97316"/>
+  <text x="200" y="211" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="23" font-weight="700">Tower Defense</text>
+</svg>

@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Card Battle - Play Free Online</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;background:radial-gradient(circle at top,#312e81,#0f172a 70%);font-family:Arial,sans-serif;color:#e2e8f0;display:flex;align-items:center;justify-content:center}.game{width:min(96vw,980px);padding:14px}.arena{display:grid;grid-template-columns:1fr 1fr;gap:12px}.box,.hand,.log{background:#111827;border:1px solid #334155;border-radius:14px;padding:14px}.bar{height:12px;background:#020617;border-radius:99px;overflow:hidden;margin:8px 0}.fill{height:100%;background:#22c55e}.enemy .fill{background:#ef4444}.hand{display:grid;grid-template-columns:repeat(auto-fit,minmax(128px,1fr));gap:10px;margin-top:12px}.card{min-height:132px;border:1px solid #475569;border-radius:12px;background:linear-gradient(160deg,#1e293b,#0f172a);padding:10px;text-align:left;cursor:pointer}.card:hover{border-color:#a78bfa}.card b{color:#facc15}.top{display:flex;gap:10px;flex-wrap:wrap;align-items:center;margin-bottom:10px}.pill{background:#0f172a;border:1px solid #334155;border-radius:9px;padding:9px 12px;font-weight:800}button{border:0;border-radius:9px;background:#a78bfa;color:white;padding:10px 14px;font-weight:900;cursor:pointer}.log{height:112px;overflow:auto;color:#94a3b8;margin-top:12px;font-size:13px}.reward{display:none;margin-top:12px;gap:10px}.reward.show{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}@media(max-width:720px){.arena{grid-template-columns:1fr}.hand{grid-template-columns:1fr 1fr}}
+</style>
+</head>
+<body>
+<main class="game">
+  <h1>Card Battle</h1>
+  <div class="top"><div class="pill">Battle <span id="battle">1</span>/5</div><div class="pill">Energy <span id="energy">3</span></div><div class="pill">Block <span id="block">0</span></div><button onclick="endTurn()">End Turn</button><button onclick="newRun()">New Run</button></div>
+  <section class="arena">
+    <div class="box"><h2>Hero</h2><div>HP <span id="php">50</span>/50</div><div class="bar"><div class="fill" id="pbar"></div></div><p>Build a deck, block attacks, and defeat five enemies.</p></div>
+    <div class="box enemy"><h2 id="ename">Raider</h2><div>HP <span id="ehp">40</span></div><div class="bar"><div class="fill" id="ebar"></div></div><p id="intent">Intent</p></div>
+  </section>
+  <section class="hand" id="hand"></section>
+  <section class="reward" id="reward"></section>
+  <div class="log" id="log"></div>
+</main>
+<script>
+const cards={Strike:{cost:1,text:'Deal 8 damage.',play:()=>hit(8)},Guard:{cost:1,text:'Gain 7 block.',play:()=>block+=7},Bolt:{cost:2,text:'Deal 15 damage.',play:()=>hit(15)},Focus:{cost:0,text:'Draw 1 card.',play:()=>draw(1)},Heal:{cost:2,text:'Heal 8 HP.',play:()=>php=Math.min(maxhp,php+8)},Bash:{cost:2,text:'Deal 10 damage. Enemy loses 2 attack.',play:()=>{hit(10);enemy.atk=Math.max(2,enemy.atk-2)}}};
+let deck,drawPile,discard,hand,energy,block,php,maxhp=50,enemy,battle,locked=false;
+function newRun(){deck=['Strike','Strike','Strike','Strike','Guard','Guard','Guard','Bolt','Focus'];php=maxhp;battle=1;startFight();}
+function makeEnemy(){const names=['Raider','Cult Mage','Stone Guard','Ash Knight','Final Warden'];return{name:names[battle-1],hp:34+battle*12,max:34+battle*12,atk:6+battle*3};}
+function startFight(){enemy=makeEnemy();drawPile=shuffle([...deck]);discard=[];hand=[];energy=3;block=0;locked=false;draw(5);log('Battle '+battle+' begins.');render();}
+function shuffle(a){for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+function draw(n){while(n--){if(!drawPile.length){drawPile=shuffle(discard);discard=[];}if(drawPile.length)hand.push(drawPile.pop());}}
+function play(i){if(locked)return;const name=hand[i],c=cards[name];if(c.cost>energy)return log('Not enough energy.');energy-=c.cost;hand.splice(i,1);discard.push(name);c.play();if(enemy.hp<=0)return winFight();render();}
+function hit(n){enemy.hp-=n;log('You deal '+n+' damage.');}
+function endTurn(){if(locked)return;let dmg=Math.max(0,enemy.atk-block);php-=dmg;log(enemy.name+' attacks for '+dmg+'.');if(php<=0){locked=true;log('Defeat. Start a new run.');return render();}discard.push(...hand);hand=[];energy=3;block=0;draw(5);render();}
+function winFight(){locked=true;log(enemy.name+' defeated.');if(battle>=5){log('Victory! You cleared the run.');localStorage.setItem('card-best','Victory');return render();}showReward();}
+function showReward(){const pool=['Bolt','Focus','Heal','Bash','Guard','Strike'].sort(()=>Math.random()-.5).slice(0,3),r=document.getElementById('reward');r.className='reward show';r.innerHTML='';pool.forEach(name=>{const b=document.createElement('button');b.textContent='Add '+name+' - '+cards[name].text;b.onclick=()=>{deck.push(name);battle++;r.className='reward';startFight();};r.appendChild(b);});render();}
+function render(){document.getElementById('battle').textContent=battle;document.getElementById('energy').textContent=energy;document.getElementById('block').textContent=block;document.getElementById('php').textContent=php;document.getElementById('pbar').style.width=Math.max(0,php/maxhp*100)+'%';document.getElementById('ename').textContent=enemy.name;document.getElementById('ehp').textContent=Math.max(0,enemy.hp)+'/'+enemy.max;document.getElementById('ebar').style.width=Math.max(0,enemy.hp/enemy.max*100)+'%';document.getElementById('intent').textContent='Intent: attack for '+enemy.atk;const h=document.getElementById('hand');h.innerHTML='';hand.forEach((name,i)=>{const c=cards[name],d=document.createElement('button');d.className='card';d.innerHTML='<b>'+name+'</b><br>Cost '+c.cost+'<p>'+c.text+'</p>';d.onclick=()=>play(i);h.appendChild(d);});}
+function log(s){document.getElementById('log').innerHTML='<div>'+s+'</div>'+document.getElementById('log').innerHTML;}
+newRun();
+</script>
+</body>
+</html>

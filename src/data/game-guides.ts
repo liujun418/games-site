@@ -102,6 +102,33 @@ const guides: Record<string, GameGuide> = {
       { question: 'Do red targets count?', answer: 'Red decoys subtract points, so avoid tapping them.' },
     ],
   },
+  'dungeon-crawl': {
+    howToPlay: ['Explore a 10x10 dungeon one tile at a time.', 'Fight monsters, collect gold, drink potions, and descend through three floors.', 'Defeat the final boss or survive as long as possible for a higher score.'],
+    controls: ['Use the on-screen direction buttons to move.', 'Use Rest to recover a little HP, but nearby monsters may still attack.'],
+    tips: ['Do not rush into every monster if your HP is low.', 'Gold and boss rewards improve your score, but potions are often more valuable than detours.', 'Leveling up increases your attack and maximum HP, so fighting weaker enemies early can pay off.'],
+    faq: [
+      { question: 'How many floors are in the run?', answer: 'The first version has three floors, with a stronger boss on the final floor.' },
+      { question: 'Is the dungeon random?', answer: 'Yes. Walls, monsters, gold, potions, and the exit are placed differently each run.' },
+    ],
+  },
+  'tower-defense': {
+    howToPlay: ['Place towers on green build pads before starting a wave.', 'Enemies follow the road toward the exit and cost lives if they escape.', 'Earn gold from defeated enemies and upgrade towers between waves.'],
+    controls: ['Click a green pad to build a tower.', 'Click an existing tower to upgrade its damage, range, and firing speed.', 'Use Start Wave when you are ready for the next attack.'],
+    tips: ['Build near bends so towers can shoot enemies longer.', 'Upgrade a few well-positioned towers instead of filling every pad too early.', 'Save gold before later waves because enemy HP scales upward.'],
+    faq: [
+      { question: 'How do towers target enemies?', answer: 'Towers prefer enemies in range that are farthest along the path.' },
+      { question: 'Can I lose?', answer: 'Yes. The game ends when enough enemies reach the exit and your lives drop to zero.' },
+    ],
+  },
+  'card-battle': {
+    howToPlay: ['Use energy each turn to play cards from your hand.', 'Attack enemy HP, build block before incoming attacks, and add reward cards after victories.', 'Win five battles to clear the run.'],
+    controls: ['Click a card to play it if you have enough energy.', 'Click End Turn when you are done playing cards.', 'Choose one reward card after each defeated enemy.'],
+    tips: ['Block is strongest when the enemy intent shows a big attack.', 'Zero-cost draw cards help find key attacks or defenses.', 'Adding every reward is not always best; a focused deck draws important cards more often.'],
+    faq: [
+      { question: 'Is this a deck-building game?', answer: 'Yes. Your deck starts small and grows as you choose rewards after battles.' },
+      { question: 'What happens when the draw pile is empty?', answer: 'Your discard pile is shuffled into a new draw pile automatically.' },
+    ],
+  },
 };
 
 export function getGameGuide(slug: string): GameGuide {

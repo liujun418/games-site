@@ -22,6 +22,9 @@ const GAME_ASPECTS: Record<string, string> = {
   'simon-says': 'aspect-square',
   'sliding-puzzle': 'aspect-square',
   'reaction-dash': 'aspect-[16/10]',
+  'dungeon-crawl': 'aspect-[16/10]',
+  'tower-defense': 'aspect-[16/10]',
+  'card-battle': 'aspect-[16/10]',
 };
 
 const DEFAULT_ASPECT = 'aspect-[1/1]';
