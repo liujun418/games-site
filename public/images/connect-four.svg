@@ -1,0 +1,10 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#0f172a"/>
+  <rect x="70" y="34" width="260" height="154" rx="16" fill="#2563eb"/>
+  <g>
+    <circle cx="110" cy="70" r="17" fill="#ef4444"/><circle cx="155" cy="70" r="17" fill="#facc15"/><circle cx="200" cy="70" r="17" fill="#0f172a"/><circle cx="245" cy="70" r="17" fill="#0f172a"/><circle cx="290" cy="70" r="17" fill="#0f172a"/>
+    <circle cx="110" cy="112" r="17" fill="#facc15"/><circle cx="155" cy="112" r="17" fill="#ef4444"/><circle cx="200" cy="112" r="17" fill="#facc15"/><circle cx="245" cy="112" r="17" fill="#0f172a"/><circle cx="290" cy="112" r="17" fill="#0f172a"/>
+    <circle cx="110" cy="154" r="17" fill="#ef4444"/><circle cx="155" cy="154" r="17" fill="#ef4444"/><circle cx="200" cy="154" r="17" fill="#ef4444"/><circle cx="245" cy="154" r="17" fill="#ef4444"/><circle cx="290" cy="154" r="17" fill="#facc15"/>
+  </g>
+  <text x="200" y="213" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="22" font-weight="700">Connect Four</text>
+</svg>

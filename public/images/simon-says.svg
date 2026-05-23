@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#111827"/>
+  <circle cx="200" cy="105" r="82" fill="#020617" stroke="#475569" stroke-width="6"/>
+  <path d="M200 28a77 77 0 0 0-77 77h77z" fill="#22c55e"/>
+  <path d="M200 28v77h77a77 77 0 0 0-77-77z" fill="#ef4444"/>
+  <path d="M123 105a77 77 0 0 0 77 77v-77z" fill="#facc15"/>
+  <path d="M200 105v77a77 77 0 0 0 77-77z" fill="#38bdf8"/>
+  <circle cx="200" cy="105" r="28" fill="#0f172a" stroke="#e2e8f0" stroke-width="4"/>
+  <text x="200" y="113" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="16" font-weight="700">GO</text>
+  <text x="200" y="213" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="22" font-weight="700">Simon Says</text>
+</svg>

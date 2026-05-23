@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simon Says - Play Free Online</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle,#1f2937,#020617 70%);font-family:Arial,sans-serif;color:#e2e8f0}.wrap{text-align:center;width:min(92vw,520px)}.score{margin:8px 0 16px;color:#94a3b8}.pad{display:grid;grid-template-columns:repeat(2,1fr);gap:14px}.tile{aspect-ratio:1;border:0;border-radius:28px;opacity:.78;cursor:pointer;box-shadow:inset 0 -10px #0004}.tile.on{opacity:1;filter:brightness(1.5);transform:scale(.98)}.g{background:#22c55e}.r{background:#ef4444}.y{background:#facc15}.b{background:#38bdf8}.start{margin-top:18px;background:#a78bfa;color:#fff;border:0;border-radius:9px;padding:12px 22px;font-weight:900;cursor:pointer}.msg{min-height:24px;font-weight:800}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Simon Says</h1>
+  <div class="score">Level <span id="level">0</span></div>
+  <div class="msg" id="msg">Press start and repeat the lights.</div>
+  <div class="pad" id="pad"></div>
+  <button class="start" id="start">Start</button>
+</main>
+<script>
+const colors=['g','r','y','b'],pad=document.getElementById('pad'),msg=document.getElementById('msg'),levelEl=document.getElementById('level');let seq=[],input=[],playing=false,locked=true;
+colors.forEach(c=>{const b=document.createElement('button');b.className='tile '+c;b.onclick=()=>press(c);pad.appendChild(b);});
+function flash(c){const el=document.querySelector('.'+c);el.classList.add('on');setTimeout(()=>el.classList.remove('on'),360);}
+async function show(){locked=true;msg.textContent='Watch';for(const c of seq){await new Promise(r=>setTimeout(r,420));flash(c);}setTimeout(()=>{locked=false;msg.textContent='Your turn';},420);}
+function next(){input=[];seq.push(colors[Math.floor(Math.random()*4)]);levelEl.textContent=seq.length;show();}
+function press(c){if(locked||!playing)return;flash(c);input.push(c);const i=input.length-1;if(input[i]!==seq[i]){msg.textContent='Missed! Press start';playing=false;locked=true;return;}if(input.length===seq.length){msg.textContent='Nice';setTimeout(next,700);}}
+document.getElementById('start').onclick=()=>{seq=[];playing=true;next();};
+</script>
+</body>
+</html>

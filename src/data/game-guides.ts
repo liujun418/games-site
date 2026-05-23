@@ -57,6 +57,51 @@ const guides: Record<string, GameGuide> = {
       { question: 'Do colors matter?', answer: 'Yes. They tell you whether a letter is correct, misplaced, or not in the word.' },
     ],
   },
+  'minesweeper': {
+    howToPlay: ['Reveal tiles without hitting hidden mines.', 'Numbers show how many mines touch that tile.', 'Flag suspected mines and clear every safe square to win.'],
+    controls: ['Click or tap a tile to reveal it.', 'Right-click or long-press a tile to place a flag.'],
+    tips: ['Start from open areas and use number patterns to remove guesses.', 'When a number already has enough flagged neighbors, reveal the other adjacent tiles.'],
+    faq: [
+      { question: 'What do the numbers mean?', answer: 'Each number shows how many mines are in the eight surrounding tiles.' },
+      { question: 'How do I win?', answer: 'Reveal every safe tile without opening a mine.' },
+    ],
+  },
+  'connect-four': {
+    howToPlay: ['Drop a disc into any column.', 'Discs fall to the lowest empty slot.', 'Connect four of your color horizontally, vertically, or diagonally.'],
+    controls: ['Click or tap a column to drop your disc.', 'Use Reset to start a fresh match.'],
+    tips: ['Control the center columns early.', 'Block three-in-a-row threats before building your own attack.'],
+    faq: [
+      { question: 'Can two people play?', answer: 'Yes. Players take turns on the same device.' },
+      { question: 'What happens on a full board?', answer: 'If nobody connects four before the board fills, the game ends in a draw.' },
+    ],
+  },
+  'simon-says': {
+    howToPlay: ['Press Start and watch the color sequence.', 'Repeat the colors in the same order.', 'Each level adds one more color to remember.'],
+    controls: ['Click or tap the colored pads.', 'Press Start again to begin a new streak.'],
+    tips: ['Say the colors in your head as they flash.', 'Group long patterns into pairs to remember them more easily.'],
+    faq: [
+      { question: 'What ends the game?', answer: 'The round ends when you press a color that does not match the sequence.' },
+      { question: 'Does the sequence get harder?', answer: 'Yes. One new color is added after each successful level.' },
+    ],
+  },
+  'sliding-puzzle': {
+    howToPlay: ['Move tiles into the empty space.', 'Arrange the board from 1 to 15 with the blank space last.', 'Try to solve it in as few moves as possible.'],
+    controls: ['Click or tap a tile next to the empty space.', 'Use Shuffle to create a new puzzle.'],
+    tips: ['Solve the top rows first, then work downward.', 'Keep the last two rows flexible until the final sequence.'],
+    faq: [
+      { question: 'Is every shuffle solvable?', answer: 'Yes. The puzzle is shuffled by making valid moves from a solved board.' },
+      { question: 'What is the goal?', answer: 'Put the tiles in numerical order with the empty space in the bottom-right corner.' },
+    ],
+  },
+  'reaction-dash': {
+    howToPlay: ['Start the timer and hit green targets as quickly as possible.', 'Avoid red decoys because they reduce your score.', 'Score as many clean hits as you can before time runs out.'],
+    controls: ['Click or tap green targets.', 'Press Start to restart the 30-second challenge.'],
+    tips: ['Keep your pointer near the center of the play area.', 'Slow down for a split second when red decoys appear.'],
+    faq: [
+      { question: 'How long is a round?', answer: 'Each round lasts 30 seconds.' },
+      { question: 'Do red targets count?', answer: 'Red decoys subtract points, so avoid tapping them.' },
+    ],
+  },
 };
 
 export function getGameGuide(slug: string): GameGuide {

@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#101827"/>
+  <rect x="112" y="32" width="176" height="176" rx="14" fill="#1e293b" stroke="#a78bfa" stroke-width="3"/>
+  <g font-family="Arial" font-size="28" font-weight="700" text-anchor="middle">
+    <rect x="124" y="44" width="44" height="44" rx="8" fill="#7c3aed"/><text x="146" y="75" fill="#fff">1</text>
+    <rect x="176" y="44" width="44" height="44" rx="8" fill="#06b6d4"/><text x="198" y="75" fill="#fff">2</text>
+    <rect x="228" y="44" width="44" height="44" rx="8" fill="#7c3aed"/><text x="250" y="75" fill="#fff">3</text>
+    <rect x="124" y="96" width="44" height="44" rx="8" fill="#06b6d4"/><text x="146" y="127" fill="#fff">4</text>
+    <rect x="176" y="96" width="44" height="44" rx="8" fill="#7c3aed"/><text x="198" y="127" fill="#fff">5</text>
+    <rect x="228" y="96" width="44" height="44" rx="8" fill="#06b6d4"/><text x="250" y="127" fill="#fff">6</text>
+    <rect x="124" y="148" width="44" height="44" rx="8" fill="#7c3aed"/><text x="146" y="179" fill="#fff">7</text>
+    <rect x="176" y="148" width="44" height="44" rx="8" fill="#06b6d4"/><text x="198" y="179" fill="#fff">8</text>
+  </g>
+  <text x="200" y="220" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="22" font-weight="700">Sliding Puzzle</text>
+</svg>

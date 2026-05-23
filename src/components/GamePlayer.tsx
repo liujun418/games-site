@@ -17,6 +17,11 @@ const GAME_ASPECTS: Record<string, string> = {
   'cat-match': 'aspect-[4/5]',      // 8 cols wide, multi-row
   'tic-tac-toe': 'aspect-square',   // 3x100px grid ≈ square
   'plant-blessing': 'aspect-[4/5]', // complex layout, taller than wide
+  'minesweeper': 'aspect-square',
+  'connect-four': 'aspect-[4/3]',
+  'simon-says': 'aspect-square',
+  'sliding-puzzle': 'aspect-square',
+  'reaction-dash': 'aspect-[16/10]',
 };
 
 const DEFAULT_ASPECT = 'aspect-[1/1]';

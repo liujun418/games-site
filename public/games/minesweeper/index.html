@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Minesweeper - Play Free Online</title>
+<style>
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:flex;align-items:center;justify-content:center;background:radial-gradient(circle at top,#1e3a5f,#0f172a 62%);font-family:Arial,sans-serif;color:#e2e8f0}.wrap{width:min(92vw,560px);text-align:center}.top{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0}.pill{background:#111827;border:1px solid #334155;border-radius:9px;padding:10px 12px;font-weight:700}button{border:0;border-radius:9px;background:#38bdf8;color:#082f49;font-weight:800;padding:10px 14px;cursor:pointer}.board{display:grid;grid-template-columns:repeat(9,1fr);gap:4px;background:#0f172a;border:1px solid #334155;border-radius:14px;padding:8px}.cell{aspect-ratio:1;border:0;border-radius:7px;background:linear-gradient(145deg,#334155,#1e293b);color:#e2e8f0;font-size:clamp(16px,5vw,24px);font-weight:900;display:flex;align-items:center;justify-content:center;box-shadow:inset 0 -3px #0f172a}.cell.open{background:#cbd5e1;color:#0f172a;box-shadow:none}.cell.flag{color:#facc15}.cell.bomb{background:#ef4444;color:#fff}.hint{color:#94a3b8;font-size:13px;margin-top:12px}
+</style>
+</head>
+<body>
+<main class="wrap">
+  <h1>Minesweeper</h1>
+  <div class="top"><div class="pill" id="mines">Mines: 10</div><button id="reset">New Game</button><div class="pill" id="status">Find safe tiles</div></div>
+  <div class="board" id="board"></div>
+  <p class="hint">Click to reveal. Right-click or long-press to flag a mine.</p>
+</main>
+<script>
+const size=9,totalMines=10,boardEl=document.getElementById('board'),statusEl=document.getElementById('status'),minesEl=document.getElementById('mines');
+let cells,over=false,opened=0,flags=0,touchTimer=null;
+function make(){
+  cells=Array.from({length:size*size},(_,i)=>({i,m:false,o:false,f:false,n:0}));
+  opened=0;flags=0;over=false;statusEl.textContent='Find safe tiles';
+  [...cells].sort(()=>Math.random()-.5).slice(0,totalMines).forEach(c=>c.m=true);
+  cells.forEach(c=>c.n=near(c.i).filter(x=>x.m).length);
+  draw();
+}
+function near(i){const r=Math.floor(i/size),c=i%size,a=[];for(let dr=-1;dr<=1;dr++)for(let dc=-1;dc<=1;dc++){if(!dr&&!dc)continue;const nr=r+dr,nc=c+dc;if(nr>=0&&nr<size&&nc>=0&&nc<size)a.push(cells[nr*size+nc]);}return a;}
+function draw(){
+  boardEl.innerHTML='';minesEl.textContent='Mines: '+(totalMines-flags);
+  cells.forEach(c=>{const b=document.createElement('button');b.className='cell'+(c.o?' open':'')+(c.f?' flag':'')+(c.o&&c.m?' bomb':'');b.textContent=c.f?'!':c.o?(c.m?'*':(c.n||'')):'';b.oncontextmenu=e=>{e.preventDefault();flag(c.i)};b.onclick=()=>open(c.i);b.ontouchstart=()=>touchTimer=setTimeout(()=>flag(c.i),450);b.ontouchend=()=>clearTimeout(touchTimer);boardEl.appendChild(b);});
+}
+function flag(i){const c=cells[i];if(over||c.o)return;c.f=!c.f;flags+=c.f?1:-1;draw();}
+function open(i){const c=cells[i];if(over||c.o||c.f)return;c.o=true;if(c.m){over=true;cells.forEach(x=>{if(x.m)x.o=true});statusEl.textContent='Boom! Try again';draw();return;}opened++;if(!c.n)near(i).forEach(x=>open(x.i));if(opened===size*size-totalMines){over=true;statusEl.textContent='Cleared!'}draw();}
+document.getElementById('reset').onclick=make;make();
+</script>
+</body>
+</html>

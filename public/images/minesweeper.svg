@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="400" height="225" viewBox="0 0 400 225">
+  <rect width="400" height="225" fill="#101827"/>
+  <rect x="66" y="38" width="268" height="150" rx="14" fill="#17243a" stroke="#38bdf8" stroke-width="3"/>
+  <g fill="#263852" stroke="#0f172a" stroke-width="4">
+    <rect x="96" y="64" width="42" height="42" rx="6"/><rect x="142" y="64" width="42" height="42" rx="6"/><rect x="188" y="64" width="42" height="42" rx="6"/><rect x="234" y="64" width="42" height="42" rx="6"/>
+    <rect x="96" y="110" width="42" height="42" rx="6"/><rect x="142" y="110" width="42" height="42" rx="6"/><rect x="188" y="110" width="42" height="42" rx="6"/><rect x="234" y="110" width="42" height="42" rx="6"/>
+  </g>
+  <text x="117" y="94" text-anchor="middle" fill="#22c55e" font-family="Arial" font-size="24" font-weight="700">1</text>
+  <text x="163" y="140" text-anchor="middle" fill="#60a5fa" font-family="Arial" font-size="24" font-weight="700">2</text>
+  <circle cx="255" cy="85" r="13" fill="#f43f5e"/>
+  <path d="M255 65v-13m0 66v-13m-33-20h13m40 0h13m-24-23 9-9m-46 46 9-9m0-28-9-9m46 46-9-9" stroke="#fda4af" stroke-width="4" stroke-linecap="round"/>
+  <text x="200" y="207" text-anchor="middle" fill="#e2e8f0" font-family="Arial" font-size="22" font-weight="700">Minesweeper</text>
+</svg>
