@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Falling Blocks - Free Online Block Puzzle</title>
+<style>
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  min-height: 100vh;
+  background: #1d1e20;
+  color: #e2e8f0;
+  font-family: "Helvetica Neue", Arial, sans-serif;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 12px;
+}
+#wrap { width: min(100%, 520px); display: grid; gap: 10px; }
+#top { display: grid; grid-template-columns: 1fr auto; gap: 12px; align-items: start; }
+#stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.stat, #nextBox {
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  padding: 8px;
+}
+.label { color: #94a3b8; font-size: 11px; text-transform: uppercase; }
+.value { margin-top: 2px; color: #f8fafc; font-size: 18px; font-weight: 800; }
+#nextBox { width: 108px; }
+#next { display: block; width: 80px; height: 80px; margin: 4px auto 0; background: #0a0a1a; border-radius: 6px; }
+#board {
+  display: block;
+  width: min(100%, 360px);
+  aspect-ratio: 1 / 2;
+  margin: 0 auto;
+  background: #0a0a1a;
+  border: 2px solid #334155;
+  border-radius: 8px;
+  box-shadow: 0 0 24px rgba(6, 182, 212, 0.12);
+}
+#controls {
+  display: grid;
+  grid-template-columns: repeat(5, 1fr);
+  gap: 8px;
+}
+button {
+  min-height: 44px;
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  background: linear-gradient(135deg, #a855f7, #06b6d4);
+  font-weight: 800;
+  font-size: 16px;
+  cursor: pointer;
+}
+button.secondary { background: #334155; }
+#message {
+  min-height: 20px;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 13px;
+}
+@media (max-width: 420px) {
+  body { padding: 8px; }
+  #top { grid-template-columns: 1fr; }
+  #nextBox { width: 100%; }
+  #next { width: 64px; height: 64px; }
+  .value { font-size: 16px; }
+}
+</style>
+</head>
+<body>
+<div id="wrap">
+  <div id="top">
+    <div id="stats">
+      <div class="stat"><div class="label">Score</div><div class="value" id="score">0</div></div>
+      <div class="stat"><div class="label">Lines</div><div class="value" id="lines">0</div></div>
+      <div class="stat"><div class="label">Level</div><div class="value" id="level">1</div></div>
+    </div>
+    <div id="nextBox"><div class="label">Next</div><canvas id="next" width="80" height="80"></canvas></div>
+  </div>
+  <canvas id="board" width="300" height="600"></canvas>
+  <div id="controls">
+    <button id="left" aria-label="Move left">&#9664;</button>
+    <button id="rotate" aria-label="Rotate">&#8635;</button>
+    <button id="right" aria-label="Move right">&#9654;</button>
+    <button id="drop" aria-label="Hard drop">&#9660;</button>
+    <button id="pause" class="secondary">Pause</button>
+  </div>
+  <div id="message">Arrow keys move, Up rotates, Space drops, P pauses.</div>
+</div>
+<script>
+const COLS = 10;
+const ROWS = 20;
+const CELL = 30;
+const boardCanvas = document.getElementById('board');
+const ctx = boardCanvas.getContext('2d');
+const nextCanvas = document.getElementById('next');
+const nextCtx = nextCanvas.getContext('2d');
+const scoreEl = document.getElementById('score');
+const linesEl = document.getElementById('lines');
+const levelEl = document.getElementById('level');
+const messageEl = document.getElementById('message');
+const COLORS = {
+  I: '#06b6d4',
+  J: '#3b82f6',
+  L: '#f97316',
+  O: '#eab308',
+  S: '#22c55e',
+  T: '#a855f7',
+  Z: '#ef4444'
+};
+const SHAPES = {
+  I: [[1, 1, 1, 1]],
+  J: [[1, 0, 0], [1, 1, 1]],
+  L: [[0, 0, 1], [1, 1, 1]],
+  O: [[1, 1], [1, 1]],
+  S: [[0, 1, 1], [1, 1, 0]],
+  T: [[0, 1, 0], [1, 1, 1]],
+  Z: [[1, 1, 0], [0, 1, 1]]
+};
+let board;
+let current;
+let nextPiece;
+let score;
+let lines;
+let level;
+let dropMs;
+let lastTime;
+let accumulator;
+let paused;
+let over;
+
+function makeBoard() {
+  return Array.from({ length: ROWS }, () => Array(COLS).fill(null));
+}
+
+function cloneMatrix(matrix) {
+  return matrix.map(row => row.slice());
+}
+
+function randomPiece() {
+  const keys = Object.keys(SHAPES);
+  const type = keys[Math.floor(Math.random() * keys.length)];
+  return {
+    type,
+    shape: cloneMatrix(SHAPES[type]),
+    x: Math.floor(COLS / 2) - Math.ceil(SHAPES[type][0].length / 2),
+    y: 0
+  };
+}
+
+function reset() {
+  board = makeBoard();
+  score = 0;
+  lines = 0;
+  level = 1;
+  dropMs = 820;
+  accumulator = 0;
+  paused = false;
+  over = false;
+  current = randomPiece();
+  nextPiece = randomPiece();
+  updateHud();
+  setMessage('Arrow keys move, Up rotates, Space drops, P pauses.');
+  draw();
+}
+
+function updateHud() {
+  scoreEl.textContent = score;
+  linesEl.textContent = lines;
+  levelEl.textContent = level;
+}
+
+function setMessage(text) {
+  messageEl.textContent = text;
+}
+
+function rotateMatrix(matrix) {
+  return matrix[0].map((_, i) => matrix.map(row => row[i]).reverse());
+}
+
+function collides(piece, offsetX = 0, offsetY = 0, shape = piece.shape) {
+  for (let y = 0; y < shape.length; y++) {
+    for (let x = 0; x < shape[y].length; x++) {
+      if (!shape[y][x]) continue;
+      const bx = piece.x + x + offsetX;
+      const by = piece.y + y + offsetY;
+      if (bx < 0 || bx >= COLS || by >= ROWS) return true;
+      if (by >= 0 && board[by][bx]) return true;
+    }
+  }
+  return false;
+}
+
+function mergePiece() {
+  current.shape.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell) {
+        const by = current.y + y;
+        const bx = current.x + x;
+        if (by >= 0) board[by][bx] = current.type;
+      }
+    });
+  });
+}
+
+function clearLines() {
+  let cleared = 0;
+  board = board.filter(row => {
+    if (row.every(Boolean)) {
+      cleared++;
+      return false;
+    }
+    return true;
+  });
+  while (board.length < ROWS) board.unshift(Array(COLS).fill(null));
+  if (!cleared) return;
+  const awards = [0, 100, 300, 500, 800];
+  score += awards[cleared] * level;
+  lines += cleared;
+  level = Math.floor(lines / 10) + 1;
+  dropMs = Math.max(150, 820 - (level - 1) * 70);
+  updateHud();
+}
+
+function spawnNext() {
+  current = nextPiece;
+  nextPiece = randomPiece();
+  if (collides(current)) {
+    over = true;
+    setMessage('Game over. Press Play to start again.');
+    document.getElementById('pause').textContent = 'Play';
+  }
+}
+
+function stepDown() {
+  if (!collides(current, 0, 1)) {
+    current.y++;
+    return;
+  }
+  mergePiece();
+  clearLines();
+  spawnNext();
+}
+
+function move(dx) {
+  if (paused || over) return;
+  if (!collides(current, dx, 0)) current.x += dx;
+  draw();
+}
+
+function rotate() {
+  if (paused || over) return;
+  const rotated = rotateMatrix(current.shape);
+  const kicks = [0, -1, 1, -2, 2];
+  for (const kick of kicks) {
+    if (!collides(current, kick, 0, rotated)) {
+      current.shape = rotated;
+      current.x += kick;
+      break;
+    }
+  }
+  draw();
+}
+
+function softDrop() {
+  if (paused || over) return;
+  stepDown();
+  score += 1;
+  updateHud();
+  draw();
+}
+
+function hardDrop() {
+  if (paused || over) return;
+  let distance = 0;
+  while (!collides(current, 0, 1)) {
+    current.y++;
+    distance++;
+  }
+  score += distance * 2;
+  stepDown();
+  updateHud();
+  draw();
+}
+
+function drawCell(context, x, y, size, color) {
+  context.fillStyle = color;
+  context.fillRect(x, y, size, size);
+  context.strokeStyle = '#0f172a';
+  context.lineWidth = 2;
+  context.strokeRect(x + 1, y + 1, size - 2, size - 2);
+  context.fillStyle = 'rgba(255,255,255,0.18)';
+  context.fillRect(x + 3, y + 3, size - 6, 4);
+}
+
+function drawBoard() {
+  ctx.fillStyle = '#0a0a1a';
+  ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  ctx.strokeStyle = '#162033';
+  ctx.lineWidth = 1;
+  for (let x = 0; x <= COLS; x++) {
+    ctx.beginPath();
+    ctx.moveTo(x * CELL, 0);
+    ctx.lineTo(x * CELL, ROWS * CELL);
+    ctx.stroke();
+  }
+  for (let y = 0; y <= ROWS; y++) {
+    ctx.beginPath();
+    ctx.moveTo(0, y * CELL);
+    ctx.lineTo(COLS * CELL, y * CELL);
+    ctx.stroke();
+  }
+  board.forEach((row, y) => {
+    row.forEach((type, x) => {
+      if (type) drawCell(ctx, x * CELL, y * CELL, CELL, COLORS[type]);
+    });
+  });
+}
+
+function drawPiece() {
+  current.shape.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell) drawCell(ctx, (current.x + x) * CELL, (current.y + y) * CELL, CELL, COLORS[current.type]);
+    });
+  });
+}
+
+function drawNext() {
+  nextCtx.fillStyle = '#0a0a1a';
+  nextCtx.fillRect(0, 0, 80, 80);
+  const size = 18;
+  const shape = nextPiece.shape;
+  const offsetX = (80 - shape[0].length * size) / 2;
+  const offsetY = (80 - shape.length * size) / 2;
+  shape.forEach((row, y) => {
+    row.forEach((cell, x) => {
+      if (cell) drawCell(nextCtx, offsetX + x * size, offsetY + y * size, size, COLORS[nextPiece.type]);
+    });
+  });
+}
+
+function drawOverlay(text) {
+  ctx.fillStyle = 'rgba(10, 10, 26, 0.72)';
+  ctx.fillRect(0, 0, boardCanvas.width, boardCanvas.height);
+  ctx.fillStyle = '#f8fafc';
+  ctx.font = '800 28px Helvetica, Arial, sans-serif';
+  ctx.textAlign = 'center';
+  ctx.fillText(text, boardCanvas.width / 2, boardCanvas.height / 2);
+}
+
+function draw() {
+  drawBoard();
+  if (!over) drawPiece();
+  drawNext();
+  if (paused) drawOverlay('Paused');
+  if (over) drawOverlay('Game Over');
+}
+
+function loop(time = 0) {
+  const delta = time - lastTime;
+  lastTime = time;
+  if (!paused && !over) {
+    accumulator += delta;
+    if (accumulator >= dropMs) {
+      stepDown();
+      accumulator = 0;
+    }
+  }
+  draw();
+  requestAnimationFrame(loop);
+}
+
+function togglePause() {
+  if (over) {
+    document.getElementById('pause').textContent = 'Pause';
+    reset();
+    return;
+  }
+  paused = !paused;
+  document.getElementById('pause').textContent = paused ? 'Play' : 'Pause';
+  setMessage(paused ? 'Paused. Press Play or P to continue.' : 'Arrow keys move, Up rotates, Space drops, P pauses.');
+  draw();
+}
+
+document.addEventListener('keydown', event => {
+  if (event.key === 'ArrowLeft') move(-1);
+  if (event.key === 'ArrowRight') move(1);
+  if (event.key === 'ArrowUp') rotate();
+  if (event.key === 'ArrowDown') softDrop();
+  if (event.code === 'Space') {
+    event.preventDefault();
+    hardDrop();
+  }
+  if (event.key.toLowerCase() === 'p') togglePause();
+});
+
+document.getElementById('left').addEventListener('click', () => move(-1));
+document.getElementById('right').addEventListener('click', () => move(1));
+document.getElementById('rotate').addEventListener('click', rotate);
+document.getElementById('drop').addEventListener('click', hardDrop);
+document.getElementById('pause').addEventListener('click', togglePause);
+
+reset();
+requestAnimationFrame(loop);
+</script>
+</body>
+</html>

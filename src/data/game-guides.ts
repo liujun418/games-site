@@ -129,6 +129,15 @@ const guides: Record<string, GameGuide> = {
       { question: 'What happens when the draw pile is empty?', answer: 'Your discard pile is shuffled into a new draw pile automatically.' },
     ],
   },
+  'falling-blocks': {
+    howToPlay: ['Guide each falling shape into the board before it locks in place.', 'Fill a complete horizontal line to clear it and earn points.', 'The game speeds up as you clear more lines, so keep the stack low.'],
+    controls: ['Use Left and Right to move, Up to rotate, Down to soft drop, and Space to hard drop.', 'On mobile, use the on-screen buttons below the board.', 'Press P or the pause button to pause the round.'],
+    tips: ['Leave a clean vertical gap for long pieces when you are building for big clears.', 'Flatten bumps early so future shapes have more landing options.', 'Use hard drop only when you are sure the piece is aligned.'],
+    faq: [
+      { question: 'How do I score more points?', answer: 'Clear multiple lines at once and keep playing as the level increases for higher bonuses.' },
+      { question: 'When does the game end?', answer: 'The round ends when new shapes can no longer enter the board.' },
+    ],
+  },
 };
 
 export function getGameGuide(slug: string): GameGuide {

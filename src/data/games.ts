@@ -287,4 +287,17 @@ export const selfDevelopedGames: Game[] = [
     featured: true,
     createdAt: '2026-05-24',
   },
+  {
+    id: 'falling-blocks',
+    slug: 'falling-blocks',
+    title: 'Falling Blocks',
+    description: 'Rotate and stack falling shapes, clear full lines, and chase a high score in this classic block puzzle.',
+    category: 'arcade',
+    thumbnail: '/images/falling-blocks.svg',
+    source: 'self',
+    gameUrl: '/games/falling-blocks/index.html',
+    tags: ['arcade', 'blocks', 'puzzle', 'classic', 'reflex', 'strategy'],
+    featured: true,
+    createdAt: '2026-06-03',
+  },
 ];

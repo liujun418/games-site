@@ -25,6 +25,7 @@ const GAME_ASPECTS: Record<string, string> = {
   'dungeon-crawl': 'aspect-[16/10]',
   'tower-defense': 'aspect-[16/10]',
   'card-battle': 'aspect-[16/10]',
+  'falling-blocks': 'aspect-[3/4]',
 };
 
 const DEFAULT_ASPECT = 'aspect-[1/1]';
